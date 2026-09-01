@@ -69,7 +69,7 @@ export async function POST(req: Request) {
     const finalSlugVi = slug_vi || generateSlug(title_vi);
     const finalSlugEn = slug_en || generateSlug(title_en || title_vi);
     const finalStatus = status || 'published';
-    const isPub = finalStatus === 'published' ? 1 : 0;
+    const isPub = finalStatus === 'published';
 
     if (id) {
       await prisma.$executeRawUnsafe(

@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export interface SectionContent {
   title?: string;
@@ -21,7 +19,7 @@ export async function getOrderedPageSections(pageSlug: string): Promise<string[]
   try {
     const rawSections: any[] = await prisma.$queryRawUnsafe(`
       SELECT section_key FROM CmsSection
-      WHERE page_slug = '${pageSlug}' AND is_active = 1
+      WHERE page_slug = '${pageSlug}'
       ORDER BY "order" ASC, id ASC
     `);
     if (rawSections && rawSections.length > 0) {
