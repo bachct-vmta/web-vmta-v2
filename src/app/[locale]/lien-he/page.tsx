@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getSectionContent } from '@/lib/cms';
+import { AllianceJoinForm } from '@/components/contact/AllianceJoinForm';
 
 export default async function ContactPage({
   params,
@@ -109,91 +110,14 @@ export default async function ContactPage({
         </div>
       </section>
 
-      {/* 3. Partner Join Form */}
+      {/* 3. Partner Join Form (Interactive Client Component) */}
       <section className="relative overflow-hidden py-[56px] md:py-[80px] bg-slate-50 border-b border-slate-200/80">
         <div className="absolute inset-0 opacity-25 pointer-events-none">
           <img src="/images/contact/forms-bg.png" className="w-full h-full object-cover" alt="" />
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 z-10">
-          <div id="partner-form" className="bg-white p-8 md:p-12 rounded-3xl border border-slate-200 shadow-xl space-y-6">
-            <div className="text-center border-b border-slate-100 pb-6">
-              <h2 className="font-sharp-bo text-[30px] md:text-[34px] uppercase font-bold leading-tight text-[#0b7f7c] mb-2">
-                {isVi ? 'Tham gia hệ sinh thái của VMTA' : 'Join the VMTA Ecosystem'}
-              </h2>
-              <p className="font-utm-helve text-slate-700 text-base">
-                {isVi
-                  ? 'Kết nối với hệ sinh thái Liên minh du lịch Y tế Việt Nam'
-                  : 'Connect with the Vietnam Medical Tourism Alliance Ecosystem'}
-              </p>
-            </div>
-
-            <form className="space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <input
-                    type="text"
-                    required
-                    placeholder={isVi ? 'Họ tên' : 'Name'}
-                    className="w-full px-4 py-4 bg-[#0b7f7c] text-white placeholder-white/90 font-utm-helve text-base focus:outline-none focus:ring-2 focus:ring-[#d31e45] rounded-none border-0"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="email"
-                    required
-                    placeholder="Email"
-                    className="w-full px-4 py-4 bg-[#0b7f7c] text-white placeholder-white/90 font-utm-helve text-base focus:outline-none focus:ring-2 focus:ring-[#d31e45] rounded-none border-0"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <input
-                    type="tel"
-                    required
-                    placeholder={isVi ? 'Điện thoại' : 'Phone'}
-                    className="w-full px-4 py-4 bg-[#0b7f7c] text-white placeholder-white/90 font-utm-helve text-base focus:outline-none focus:ring-2 focus:ring-[#d31e45] rounded-none border-0"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    placeholder={isVi ? 'Ngành nghề' : 'Industry'}
-                    className="w-full px-4 py-4 bg-[#0b7f7c] text-white placeholder-white/90 font-utm-helve text-base focus:outline-none focus:ring-2 focus:ring-[#d31e45] rounded-none border-0"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  placeholder={isVi ? 'Tên doanh nghiệp' : 'Company name'}
-                  className="w-full px-4 py-4 bg-[#0b7f7c] text-white placeholder-white/90 font-utm-helve text-base focus:outline-none focus:ring-2 focus:ring-[#d31e45] rounded-none border-0"
-                />
-              </div>
-
-              <div>
-                <textarea
-                  rows={5}
-                  placeholder={isVi ? 'Ghi chú' : 'Note'}
-                  className="w-full px-4 py-4 bg-[#0b7f7c] text-white placeholder-white/90 font-utm-helve text-base focus:outline-none focus:ring-2 focus:ring-[#d31e45] resize-none border-0 min-h-[140px]"
-                />
-              </div>
-
-              <div className="text-center pt-2">
-                <button
-                  type="submit"
-                  className="rounded-lg bg-[#0b7f7c] px-10 py-4 font-sharp-bo text-white uppercase font-bold text-sm hover:bg-[#096d6a] transition shadow-md"
-                >
-                  {isVi ? 'Gửi ngay' : 'Submit now'}
-                </button>
-              </div>
-            </form>
-          </div>
+          <AllianceJoinForm locale={locale} />
         </div>
       </section>
 

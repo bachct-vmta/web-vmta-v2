@@ -27,11 +27,11 @@ export const AdminFooter: React.FC = () => {
         <div className="md:col-span-7 space-y-3 md:text-right">
           <div className="flex flex-wrap items-center md:justify-end gap-3">
             <span className="bg-teal-900/80 text-teal-200 border border-teal-700/80 px-3 py-1 rounded-lg text-[11px] font-mono font-bold">
-              VMTA CMS v2.4.0 (Release 2026)
+              VMTA CMS v2.5.0 (Release 2026)
             </span>
             <button
               onClick={() => setShowChangelog(!showChangelog)}
-              className="text-xs text-amber-400 font-bold hover:underline bg-slate-800 px-3 py-1 rounded-lg border border-slate-700"
+              className="text-xs text-amber-400 font-bold hover:underline bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 shadow-sm"
             >
               {showChangelog ? '▲ Ẩn Nhật Ký Thay Đổi' : '📋 Xem Nhật Ký Thay Đổi (Changelog)'}
             </button>
@@ -47,17 +47,30 @@ export const AdminFooter: React.FC = () => {
       {showChangelog && (
         <div className="max-w-7xl mx-auto px-4 mt-6 pt-6 border-t border-slate-800">
           <div className="bg-slate-800/90 p-5 rounded-2xl border border-slate-700 space-y-3">
-            <h5 className="text-xs font-bold uppercase text-amber-300">
+            <h5 className="text-xs font-bold uppercase text-amber-300 flex items-center gap-2">
               📜 NHẬT KÝ CẬP NHẬT PHIÊN BẢN (SYSTEM CHANGELOG)
             </h5>
-            <div className="space-y-2 text-[11px] text-slate-300">
-              <div className="border-b border-slate-700 pb-2">
-                <span className="font-bold text-teal-400 font-mono">v2.4.0 (Hiện tại)</span>: 
-                Tích hợp tính năng Upload Ảnh từ máy tính & Quản lý Link Video YouTube/HLS trực tiếp vào CSDL SQLite dev.db. Đồng bộ toàn bộ nội dung hiển thị 6 trang con.
+            <div className="space-y-3 text-[11px] text-slate-300">
+              <div className="border-b border-slate-700/80 pb-3 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-emerald-400 font-mono">v2.5.0 (Mới nhất)</span>
+                  <span className="bg-emerald-900/60 text-emerald-300 text-[10px] px-2 py-0.5 rounded">01/09/2026</span>
+                </div>
+                <ul className="list-disc pl-4 space-y-0.5 text-slate-300">
+                  <li>✨ <b>Form Đăng Ký Tham Gia Liên Minh</b>: Tích hợp Client Component xử lý gửi form "Tham gia hệ sinh thái của VMTA" ở trang Liên hệ (`/lien-he`), tự động gửi về Admin <b>YÊU CẦU & NEWSLETTER</b>.</li>
+                  <li>✨ <b>Bộ Máy Dịch Tự Động Đa Tầng (VI ➔ EN)</b>: Tích hợp Google GTX Engine, MyMemory API & Từ điển Y tế VMTA, cho phép dịch tự động 100% không cần API Key trả phí.</li>
+                  <li>✨ <b>Cơ Sở Dữ Liệu PostgreSQL 16 & Seed 1-Click</b>: Thêm nút `🌱 NẠP DỮ LIỆU MẪU CSLD (1-CLICK)` trực tiếp trong Admin UI và tương thích ANSI SQL với Vibe Host.</li>
+                  <li>✨ <b>Nén Dung Lượng Next.js Standalone</b>: Nén kích thước build server giảm 80% (từ 1.3GB xuống ~150MB), giải phóng hoàn toàn vạch đỏ lưu trữ trên Vibe Host.</li>
+                  <li>✨ <b>Cloud Storage Cloudinary CDN</b>: Đồng bộ 2 chiều trực tiếp thư viện ảnh Cloudinary (`bl0iakcy`) với tab `📁 QUẢN LÝ MEDIA`.</li>
+                </ul>
               </div>
-              <div className="border-b border-slate-700 pb-2">
+              <div className="border-b border-slate-700/80 pb-2">
+                <span className="font-bold text-teal-400 font-mono">v2.4.0</span>: 
+                Tích hợp tính năng Upload Ảnh từ máy tính & Quản lý Link Video YouTube/HLS trực tiếp vào CSDL. Đồng bộ toàn bộ nội dung hiển thị 6 trang con.
+              </div>
+              <div className="border-b border-slate-700/80 pb-2">
                 <span className="font-bold text-teal-400 font-mono">v2.3.0</span>: 
-                Tích hợp dịch tự động Tiếng Việt sang Tiếng Anh (Google Cloud Translation API) trực tiếp trên trình biên soạn CMS Section.
+                Tích hợp dịch tự động Tiếng Việt sang Tiếng Anh trực tiếp trên trình biên soạn CMS Section.
               </div>
               <div>
                 <span className="font-bold text-teal-400 font-mono">v2.2.0</span>: 
