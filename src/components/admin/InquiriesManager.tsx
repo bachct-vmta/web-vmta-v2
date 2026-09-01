@@ -125,52 +125,61 @@ export const InquiriesManager: React.FC = () => {
                   <tr className="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
                     <th className="p-3">Khách hàng</th>
                     <th className="p-3">Thông tin liên hệ</th>
-                    <th className="p-3">Nội dung yêu cầu</th>
+                    <th className="p-3">Dịch vụ quan tâm</th>
+                    <th className="p-3">Nội dung ghi chú</th>
                     <th className="p-3">Thời gian</th>
                     <th className="p-3">Trạng thái</th>
                     <th className="p-3 text-right">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {inquiries.map((inq) => (
-                    <tr key={inq.id} className="hover:bg-slate-50">
-                      <td className="p-3 font-bold text-[#0b7f7c]">
-                        {inq.full_name}
-                        {inq.organization && <p className="text-[10px] text-slate-400 font-normal">{inq.organization}</p>}
-                      </td>
-                      <td className="p-3 space-y-0.5">
-                        <p className="font-mono text-slate-800">{inq.email}</p>
-                        <p className="text-slate-500">{inq.phone || 'Không có SĐT'}</p>
-                      </td>
-                      <td className="p-3 max-w-xs text-slate-700 line-clamp-2">{inq.content || 'Yêu cầu tư vấn'}</td>
-                      <td className="p-3 text-slate-400 text-[11px]">{inq.created_at}</td>
-                      <td className="p-3">
-                        <select
-                          value={inq.status || 'new'}
-                          onChange={(e) => handleUpdateStatus(inq.id, e.target.value)}
-                          className={`px-2 py-1 rounded-md text-[11px] font-bold outline-none border ${
-                            inq.status === 'done'
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                              : inq.status === 'processing'
-                              ? 'bg-amber-50 text-amber-900 border-amber-300'
-                              : 'bg-red-50 text-red-800 border-red-300'
-                          }`}
-                        >
-                          <option value="new">🔴 Mới tiếp nhận</option>
-                          <option value="processing">🟡 Đang xử lý</option>
-                          <option value="done">🟢 Đã hoàn thành</option>
-                        </select>
-                      </td>
-                      <td className="p-3 text-right">
-                        <button
-                          onClick={() => handleDeleteInquiry(inq.id)}
-                          className="px-2.5 py-1 bg-rose-500 text-white rounded text-[11px] font-bold hover:bg-rose-600"
-                        >
-                          Xóa
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {inquiries.map((inq) => {
+                    const displayName = inq.name || inq.full_name || 'Khách hàng';
+                    const displayService = inq.service || inq.organization || 'Tư vấn chung';
+                    const displayMessage = inq.message || inq.content || 'N/A';
+                    const statusVal = inq.status || 'pending';
+
+                    return (
+                      <tr key={inq.id} className="hover:bg-slate-50">
+                        <td className="p-3 font-bold text-[#0b7f7c]">
+                          {displayName}
+                        </td>
+                        <td className="p-3 space-y-0.5">
+                          <p className="font-mono text-slate-800">{inq.email || 'Chưa cung cấp email'}</p>
+                          <p className="text-slate-500 font-bold">{inq.phone || 'Chưa có SĐT'}</p>
+                        </td>
+                        <td className="p-3 font-semibold text-slate-700">{displayService}</td>
+                        <td className="p-3 max-w-xs text-slate-700 line-clamp-2">{displayMessage}</td>
+                        <td className="p-3 text-slate-400 text-[11px]">{inq.created_at || 'Mới gửi'}</td>
+                        <td className="p-3">
+                          <select
+                            value={statusVal}
+                            onChange={(e) => handleUpdateStatus(inq.id, e.target.value)}
+                            className={`px-2 py-1 rounded-md text-[11px] font-bold outline-none border ${
+                              statusVal === 'done'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                : statusVal === 'processing'
+                                ? 'bg-amber-50 text-amber-900 border-amber-300'
+                                : 'bg-red-50 text-red-800 border-red-300'
+                            }`}
+                          >
+                            <option value="pending">🔴 Mới tiếp nhận</option>
+                            <option value="new">🔴 Mới tiếp nhận</option>
+                            <option value="processing">🟡 Đang xử lý</option>
+                            <option value="done">🟢 Đã hoàn thành</option>
+                          </select>
+                        </td>
+                        <td className="p-3 text-right">
+                          <button
+                            onClick={() => handleDeleteInquiry(inq.id)}
+                            className="px-2.5 py-1 bg-rose-500 text-white rounded text-[11px] font-bold hover:bg-rose-600"
+                          >
+                            Xóa
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -198,7 +207,7 @@ export const InquiriesManager: React.FC = () => {
                     <tr key={sub.id} className="hover:bg-slate-50">
                       <td className="p-3 font-bold text-slate-400">#{idx + 1}</td>
                       <td className="p-3 font-bold text-[#0b7f7c] font-mono">{sub.email}</td>
-                      <td className="p-3 text-slate-400 text-[11px]">{sub.created_at}</td>
+                      <td className="p-3 text-slate-400 text-[11px]">{sub.created_at || 'Mới đăng ký'}</td>
                       <td className="p-3 text-right">
                         <button
                           onClick={() => handleDeleteSubscriber(sub.id)}

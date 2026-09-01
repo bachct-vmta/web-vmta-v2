@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,24 +15,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Họ tên và số điện thoại là bắt buộc' }, { status: 400 });
     }
 
-    const inquiry = await prisma.inquiry.create({
-      data: {
-        name,
-        phone,
-        email: email || null,
-        service: service || null,
-        message: message || null,
-        status: 'pending',
-      },
-    });
+    // Insert into Inquiry table using ANSI SQL compatible with PostgreSQL & SQLite
+    await prisma.$executeRawUnsafe(
+      `INSERT INTO Inquiry (name, phone, email, service, message, status) VALUES (?, ?, ?, ?, ?, ?);`,
+      name, phone, email || '', service || 'Tư vấn chung', message || '', 'pending'
+    );
 
     return NextResponse.json({
       success: true,
-      message: 'Gửi yêu cầu tư vấn thành công! VMTA sẽ liên hệ lại với bạn trong thời gian sớm nhất.',
-      data: inquiry,
+      message: 'Gửi yêu cầu tư vấn thành công! Đội ngũ chuyên gia VMTA sẽ liên hệ lại với bạn trong thời gian sớm nhất.',
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Lỗi hệ thống khi gửi yêu cầu';
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('Error submitting inquiry:', error);
+    const errMessage = error instanceof Error ? error.message : 'Lỗi hệ thống khi gửi yêu cầu';
+    return NextResponse.json({ error: errMessage }, { status: 500 });
   }
 }

@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -16,15 +14,19 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { full_name, phone, email, organization, content } = body;
+    const { name, full_name, phone, email, service, organization, message, content } = body;
 
-    if (!full_name || !email) {
-      return NextResponse.json({ error: 'Missing full_name or email' }, { status: 400 });
+    const finalName = name || full_name;
+    if (!finalName) {
+      return NextResponse.json({ error: 'Missing name' }, { status: 400 });
     }
 
+    const finalService = service || organization || 'Tư vấn chung';
+    const finalMessage = message || content || '';
+
     await prisma.$executeRawUnsafe(
-      `INSERT INTO Inquiry (full_name, phone, email, organization, content) VALUES (?, ?, ?, ?, ?);`,
-      full_name, phone || '', email, organization || '', content || ''
+      `INSERT INTO Inquiry (name, phone, email, service, message, status) VALUES (?, ?, ?, ?, ?, ?);`,
+      finalName, phone || '', email || '', finalService, finalMessage, 'pending'
     );
 
     return NextResponse.json({ success: true });
