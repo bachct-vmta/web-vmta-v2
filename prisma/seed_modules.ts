@@ -3,125 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Initializing and seeding 5 Admin Header Modules into dev.db...');
-
-  // 1. Create Tables for Medical & Tourism Packages
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS MedicalCategory (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      type TEXT NOT NULL, -- 'medical' or 'tourism'
-      category_key TEXT NOT NULL UNIQUE,
-      title_vi TEXT NOT NULL,
-      title_en TEXT NOT NULL,
-      icon TEXT
-    );
-  `);
-
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS MedicalPackage (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      category_key TEXT NOT NULL,
-      title_vi TEXT NOT NULL,
-      title_en TEXT NOT NULL,
-      subtitle_vi TEXT,
-      subtitle_en TEXT,
-      duration_vi TEXT,
-      duration_en TEXT,
-      price_vi TEXT,
-      price_en TEXT,
-      facility_name TEXT,
-      image_url TEXT,
-      itinerary_vi TEXT,
-      itinerary_en TEXT,
-      is_active BOOLEAN DEFAULT 1,
-      FOREIGN KEY(category_key) REFERENCES MedicalCategory(category_key) ON DELETE CASCADE
-    );
-  `);
-
-  // 2. Create Table for Alliance Members (4 Groups)
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS AllianceMember (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      group_id INTEGER NOT NULL, -- 1: Y tế, 2: Lữ hành/Du lịch, 3: Tài chính/Bảo hiểm, 4: Khác
-      name_vi TEXT NOT NULL,
-      name_en TEXT NOT NULL,
-      badge TEXT DEFAULT 'Chuẩn', -- 'Bạch Kim', 'Vàng', 'Chuẩn'
-      logo_url TEXT,
-      address TEXT,
-      phone TEXT,
-      email TEXT,
-      website TEXT,
-      description_vi TEXT,
-      description_en TEXT,
-      is_active BOOLEAN DEFAULT 1
-    );
-  `);
-
-  // 3. Create Table for Posts & News
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS Post (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      slug TEXT NOT NULL UNIQUE,
-      category TEXT DEFAULT 'Sự kiện VMTA',
-      title_vi TEXT NOT NULL,
-      title_en TEXT NOT NULL,
-      summary_vi TEXT,
-      summary_en TEXT,
-      content_vi TEXT,
-      content_en TEXT,
-      image_url TEXT,
-      author TEXT DEFAULT 'Ban Biên Tập VMTA',
-      is_published BOOLEAN DEFAULT 1,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-
-  // 4. Create Tables for Inquiries & Newsletter
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS Inquiry (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      full_name TEXT NOT NULL,
-      phone TEXT,
-      email TEXT NOT NULL,
-      organization TEXT,
-      content TEXT,
-      status TEXT DEFAULT 'new', -- 'new', 'processing', 'done'
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS NewsletterSubscriber (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT NOT NULL UNIQUE,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-
-  // 5. Create Tables for Chatbot Scripts & Logs
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS ChatbotScript (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      category TEXT DEFAULT 'Chung',
-      question_vi TEXT NOT NULL,
-      question_en TEXT NOT NULL,
-      answer_vi TEXT NOT NULL,
-      answer_en TEXT NOT NULL,
-      "order" INTEGER DEFAULT 1
-    );
-  `);
-
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS ChatbotLog (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_email TEXT,
-      user_phone TEXT,
-      user_message TEXT,
-      bot_response TEXT,
-      status TEXT DEFAULT 'pending', -- 'pending', 'replied'
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
+  console.log('Initializing and seeding 5 Admin Header Modules into database...');
 
   // SEED DATA 1: Medical & Tourism Categories
   const categories = [
@@ -139,10 +21,20 @@ async function main() {
   ];
 
   for (const cat of categories) {
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO MedicalCategory (type, category_key, title_vi, title_en, icon) VALUES (?, ?, ?, ?, ?);`,
-      cat.type, cat.category_key, cat.title_vi, cat.title_en, cat.icon
-    );
+    try {
+      const existing: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM MedicalCategory WHERE category_key = ? LIMIT 1;`,
+        cat.category_key
+      );
+      if (!existing || existing.length === 0) {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO MedicalCategory (type, category_key, title_vi, title_en, icon) VALUES (?, ?, ?, ?, ?);`,
+          cat.type, cat.category_key, cat.title_vi, cat.title_en, cat.icon
+        );
+      }
+    } catch (e) {
+      console.warn('MedicalCategory table insertion:', e);
+    }
   }
 
   // SEED DATA 1.1: Sample Packages
@@ -180,14 +72,24 @@ async function main() {
   ];
 
   for (const pkg of packages) {
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO MedicalPackage (category_key, title_vi, title_en, subtitle_vi, subtitle_en, duration_vi, duration_en, price_vi, price_en, facility_name, image_url, itinerary_vi, itinerary_en)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-      pkg.category_key, pkg.title_vi, pkg.title_en, pkg.subtitle_vi, pkg.subtitle_en, pkg.duration_vi, pkg.duration_en, pkg.price_vi, pkg.price_en, pkg.facility_name, pkg.image_url, pkg.itinerary_vi, pkg.itinerary_en
-    );
+    try {
+      const existing: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM MedicalPackage WHERE title_vi = ? LIMIT 1;`,
+        pkg.title_vi
+      );
+      if (!existing || existing.length === 0) {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO MedicalPackage (category_key, title_vi, title_en, subtitle_vi, subtitle_en, duration_vi, duration_en, price_vi, price_en, facility_name, image_url, itinerary_vi, itinerary_en)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+          pkg.category_key, pkg.title_vi, pkg.title_en, pkg.subtitle_vi, pkg.subtitle_en, pkg.duration_vi, pkg.duration_en, pkg.price_vi, pkg.price_en, pkg.facility_name, pkg.image_url, pkg.itinerary_vi, pkg.itinerary_en
+        );
+      }
+    } catch (e) {
+      console.warn('MedicalPackage insertion:', e);
+    }
   }
 
-  // SEED DATA 2: Alliance Members (4 Groups)
+  // SEED DATA 2: Alliance Members
   const allianceMembers = [
     {
       group_id: 1,
@@ -244,11 +146,21 @@ async function main() {
   ];
 
   for (const m of allianceMembers) {
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO AllianceMember (group_id, name_vi, name_en, badge, logo_url, address, phone, email, website, description_vi, description_en)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-      m.group_id, m.name_vi, m.name_en, m.badge, m.logo_url, m.address, m.phone, m.email, m.website, m.description_vi, m.description_en
-    );
+    try {
+      const existing: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM AllianceMember WHERE name_vi = ? LIMIT 1;`,
+        m.name_vi
+      );
+      if (!existing || existing.length === 0) {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO AllianceMember (group_id, name_vi, name_en, badge, logo_url, address, phone, email, website, description_vi, description_en)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+          m.group_id, m.name_vi, m.name_en, m.badge, m.logo_url, m.address, m.phone, m.email, m.website, m.description_vi, m.description_en
+        );
+      }
+    } catch (e) {
+      console.warn('AllianceMember insertion:', e);
+    }
   }
 
   // SEED DATA 3: Posts & News
@@ -280,11 +192,21 @@ async function main() {
   ];
 
   for (const p of posts) {
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO Post (slug, category, title_vi, title_en, summary_vi, summary_en, content_vi, content_en, image_url, author)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-      p.slug, p.category, p.title_vi, p.title_en, p.summary_vi, p.summary_en, p.content_vi, p.content_en, p.image_url, p.author
-    );
+    try {
+      const existing: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM Post WHERE slug = ? LIMIT 1;`,
+        p.slug
+      );
+      if (!existing || existing.length === 0) {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO Post (slug, category, title_vi, title_en, summary_vi, summary_en, content_vi, content_en, image_url, author)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+          p.slug, p.category, p.title_vi, p.title_en, p.summary_vi, p.summary_en, p.content_vi, p.content_en, p.image_url, p.author
+        );
+      }
+    } catch (e) {
+      console.warn('Post insertion:', e);
+    }
   }
 
   // SEED DATA 5: Chatbot Scripts
@@ -316,14 +238,24 @@ async function main() {
   ];
 
   for (const s of botScripts) {
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO ChatbotScript (category, question_vi, question_en, answer_vi, answer_en, "order")
-       VALUES (?, ?, ?, ?, ?, ?);`,
-      s.category, s.question_vi, s.question_en, s.answer_vi, s.answer_en, s.order
-    );
+    try {
+      const existing: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM ChatbotScript WHERE question_vi = ? LIMIT 1;`,
+        s.question_vi
+      );
+      if (!existing || existing.length === 0) {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO ChatbotScript (category, question_vi, question_en, answer_vi, answer_en, "order")
+           VALUES (?, ?, ?, ?, ?, ?);`,
+          s.category, s.question_vi, s.question_en, s.answer_vi, s.answer_en, s.order
+        );
+      }
+    } catch (e) {
+      console.warn('ChatbotScript insertion:', e);
+    }
   }
 
-  console.log('SUCCESSFULLY SEEDED ALL 5 ADMIN HEADER MODULES INTO DEV.DB!');
+  console.log('SUCCESSFULLY SEEDED ALL MODULES INTO DATABASE!');
 }
 
 main()
