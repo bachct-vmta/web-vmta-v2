@@ -10,15 +10,14 @@ export async function GET() {
       console.warn('MediaAsset query warning:', e);
     }
 
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
-    const useCloudStorage = process.env.USE_CLOUD_STORAGE === 'true';
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME || 'bl0iakcy';
+    const apiKey = process.env.CLOUDINARY_API_KEY || '666979872525556';
+    const apiSecret = process.env.CLOUDINARY_API_SECRET || 't8sUu9K2ivRBu5nWzDkYU5dz5C0';
 
     let cloudAssets: any[] = [];
 
     // Fetch live images directly from Cloudinary Admin API if credentials present
-    if (useCloudStorage && cloudName && apiKey && apiSecret && cloudName !== 'demo') {
+    if (cloudName && apiKey && apiSecret && cloudName !== 'demo') {
       try {
         const authString = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
         const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/image?max_results=100`, {
@@ -40,6 +39,8 @@ export async function GET() {
               is_cloud_direct: true,
             }));
           }
+        } else {
+          console.warn('Cloudinary Admin API fetch error status:', res.status);
         }
       } catch (cloudErr) {
         console.warn('Cloudinary fetch warning:', cloudErr);

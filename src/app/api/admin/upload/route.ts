@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'bl0iakcy';
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME || 'bl0iakcy';
     const apiKey = process.env.CLOUDINARY_API_KEY || '666979872525556';
     const apiSecret = process.env.CLOUDINARY_API_SECRET || 't8sUu9K2ivRBu5nWzDkYU5dz5C0';
     const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || 'ml_default';
