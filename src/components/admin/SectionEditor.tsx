@@ -70,6 +70,7 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
   const [uploadingLocale, setUploadingLocale] = useState<string | null>(null);
   const [translating, setTranslating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Load Sections list from database API
@@ -141,7 +142,7 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
               try { parsedEnExtra = JSON.parse(enTr.extra_json); } catch {}
             }
 
-            setVideoUrl(parsedViExtra.video_url || 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
+            setVideoUrl(parsedViExtra.video_url || 'https://storageovp.vnews.gov.vn//mediacache//2026//04//10//TS_QTND_9520_DU//9NIWHWEJC38D//hls//master.m3u8');
 
             setViData({
               title: viTr.title || '',
@@ -175,11 +176,34 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
 
       setViData({ title: '', subtitle: '', body: '', image_url: '', cta_label: '', cta_url: '', items: [], bullets: [] });
       setEnData({ title: '', subtitle: '', body: '', image_url: '', cta_label: '', cta_url: '', items: [], bullets: [] });
-      setVideoUrl('');
+      setVideoUrl('https://storageovp.vnews.gov.vn//mediacache//2026//04//10//TS_QTND_9520_DU//9NIWHWEJC38D//hls//master.m3u8');
     }
 
     loadSectionData();
   }, [pageSlug, selectedKey]);
+
+  // 1-Click Database Seed Trigger
+  const handleSeedDatabase = async () => {
+    if (!confirm('Bạn có chắc chắn muốn nạp toàn bộ Dữ Liệu Mẫu Ban Đầu vào CSDL?')) return;
+    setSeeding(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch('/api/admin/seed', { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        setMessage({ type: 'success', text: `🌱 Nạp Dữ Liệu Mẫu Thành Công! ${data.message || ''}` });
+        await fetchSectionsList();
+      } else {
+        const errData = await res.json();
+        setMessage({ type: 'error', text: `Lỗi nạp dữ liệu: ${errData.error || 'Thất bại'}` });
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Lỗi kết nối nạp dữ liệu mẫu.' });
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   // Reorder Sections (Move Up / Move Down)
   const handleReorder = async (direction: 'up' | 'down') => {
@@ -196,7 +220,6 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
 
     setSectionsList(newList);
 
-    // Save reorder to API
     try {
       await fetch('/api/admin/sections', {
         method: 'PUT',
@@ -278,41 +301,6 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
       }
     } catch (err) {
       setMessage({ type: 'error', text: 'Lỗi kết nối tạo khối Section.' });
-    }
-  };
-
-  // Handle Image Upload
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, localeKey: 'vi' | 'en') => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingLocale(localeKey);
-    setMessage(null);
-
-    const uploadData = new FormData();
-    uploadData.append('file', file);
-
-    try {
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: uploadData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (localeKey === 'vi') {
-          setViData((prev: any) => ({ ...prev, image_url: data.url }));
-        } else {
-          setEnData((prev: any) => ({ ...prev, image_url: data.url }));
-        }
-        setMessage({ type: 'success', text: `Tải ảnh ${localeKey.toUpperCase()} thành công! Bấm LƯU CẤU HÌNH để áp dụng.` });
-      } else {
-        setMessage({ type: 'error', text: 'Lỗi tải ảnh lên.' });
-      }
-    } catch (err) {
-      setMessage({ type: 'error', text: 'Lỗi kết nối khi tải ảnh.' });
-    } finally {
-      setUploadingLocale(null);
     }
   };
 
@@ -636,20 +624,29 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
               Biên soạn, sắp xếp thứ tự 🔼 🔽 hoặc thêm/xóa khối Section tùy biến kiểu Landing Page
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition shadow-md"
-          >
-            <span>➕ THÊM KHỐI SECTION MỚI</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSeedDatabase}
+              disabled={seeding}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 text-white rounded-xl text-xs font-bold hover:bg-amber-600 transition shadow-md disabled:opacity-50"
+            >
+              <span>{seeding ? '⏳ Đang nạp dữ liệu...' : '🌱 NẠP DỮ LIỆU MẪU CSLD (1-CLICK)'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition shadow-md"
+            >
+              <span>➕ THÊM KHỐI SECTION MỚI</span>
+            </button>
+          </div>
         </div>
 
         {/* Section List Tabs */}
         <div className="flex flex-wrap gap-2 pt-1">
           {sectionsList.map((sec, idx) => {
             const isSelected = selectedKey === sec.key;
-            const bPrintName = BLUEPRINT_TEMPLATES.find((b) => b.key === sec.blueprint)?.name || sec.blueprint;
             return (
               <button
                 key={sec.key}
@@ -777,82 +774,6 @@ export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
           </button>
         </div>
       </form>
-
-      {/* MODAL TO ADD NEW SECTION WITH BLUEPRINT SELECTION */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 space-y-5 animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
-              <h3 className="text-sm font-bold text-[#0b7f7c] uppercase">
-                ➕ THÊM KHỐI SECTION MỚI CHO TRANG [{pageSlug.toUpperCase()}]
-              </h3>
-              <button type="button" onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleAddNewSection} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Tên hiển thị khối Section</label>
-                <input
-                  type="text"
-                  required
-                  value={newSecName}
-                  onChange={(e) => {
-                    setNewSecName(e.target.value);
-                    if (!newSecKey) setNewSecKey(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '_'));
-                  }}
-                  placeholder="VD: Khối Thẻ Đối Tác Tiêu Biểu..."
-                  className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-xs font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Mã định danh Section Key (Chữ viết liền không dấu)</label>
-                <input
-                  type="text"
-                  required
-                  value={newSecKey}
-                  onChange={(e) => setNewSecKey(e.target.value)}
-                  placeholder="VD: partner_cards..."
-                  className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-xs font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Chọn Kiểu Mẫu Section Blueprint (Phân Loại)</label>
-                <select
-                  value={newSecBlueprint}
-                  onChange={(e) => setNewSecBlueprint(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-xs font-bold bg-white focus:border-[#0b7f7c] outline-none"
-                >
-                  {BLUEPRINT_TEMPLATES.map((b) => (
-                    <option key={b.key} value={b.key}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="pt-3 flex justify-end gap-3 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-200"
-                >
-                  Hủy Bỏ
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-[#0b7f7c] text-white rounded-xl text-xs font-bold hover:bg-[#086a67] transition shadow-md"
-                >
-                  Tạo Khối Section
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
