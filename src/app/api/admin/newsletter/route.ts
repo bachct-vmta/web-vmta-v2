@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -22,10 +20,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing email' }, { status: 400 });
     }
 
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO NewsletterSubscriber (email) VALUES (?);`,
+    const existing: any[] = await prisma.$queryRawUnsafe(
+      `SELECT id FROM NewsletterSubscriber WHERE email = ? LIMIT 1;`,
       email
     );
+
+    if (!existing || existing.length === 0) {
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO NewsletterSubscriber (email) VALUES (?);`,
+        email
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET(req: Request) {
   try {
@@ -26,7 +24,6 @@ export async function GET(req: Request) {
       ORDER BY s."order" ASC, s.id ASC
     `);
 
-    // Group translations by section
     const sectionsMap = new Map<string, any>();
 
     (rawSections || []).forEach((row) => {
@@ -67,58 +64,78 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing page_slug or section_key' }, { status: 400 });
     }
 
-    const setOrder = order || 1;
+    const setOrder = order !== undefined ? order : 1;
 
-    // Insert section if not exists
-    await prisma.$executeRawUnsafe(
-      `INSERT OR IGNORE INTO CmsSection (page_slug, section_key, "order") VALUES (?, ?, ?);`,
-      page_slug,
-      section_key,
-      setOrder
-    );
-
-    const rows: any = await prisma.$queryRawUnsafe(
+    // Check if section exists (ANSI SQL compatible with PostgreSQL & SQLite)
+    let existingSections: any[] = await prisma.$queryRawUnsafe(
       `SELECT id FROM CmsSection WHERE page_slug = ? AND section_key = ? LIMIT 1;`,
       page_slug,
       section_key
     );
 
-    if (rows && rows.length > 0) {
-      const sectionId = rows[0].id;
+    let sectionId: number;
 
-      // Update order if provided
-      if (order !== undefined) {
-        await prisma.$executeRawUnsafe(
-          `UPDATE CmsSection SET "order" = ? WHERE id = ?;`,
-          order,
-          sectionId
-        );
-      }
-
-      // Upsert VI
-      if (vi) {
-        const extraVi = vi.extra_json ? JSON.stringify(vi.extra_json) : null;
-        await prisma.$executeRawUnsafe(
-          `INSERT INTO CmsSectionTranslation (section_id, locale, title, subtitle, body, extra_json)
-           VALUES (?, 'vi', ?, ?, ?, ?)
-           ON CONFLICT(section_id, locale) DO UPDATE SET title=?, subtitle=?, body=?, extra_json=?;`,
-          sectionId, vi.title || '', vi.subtitle || '', vi.body || '', extraVi,
-          vi.title || '', vi.subtitle || '', vi.body || '', extraVi
-        );
-      }
-
-      // Upsert EN
-      if (en) {
-        const extraEn = en.extra_json ? JSON.stringify(en.extra_json) : null;
-        await prisma.$executeRawUnsafe(
-          `INSERT INTO CmsSectionTranslation (section_id, locale, title, subtitle, body, extra_json)
-           VALUES (?, 'en', ?, ?, ?, ?)
-           ON CONFLICT(section_id, locale) DO UPDATE SET title=?, subtitle=?, body=?, extra_json=?;`,
-          sectionId, en.title || '', en.subtitle || '', en.body || '', extraEn,
-          en.title || '', en.subtitle || '', en.body || '', extraEn
-        );
-      }
+    if (existingSections && existingSections.length > 0) {
+      sectionId = existingSections[0].id;
+      await prisma.$executeRawUnsafe(
+        `UPDATE CmsSection SET "order" = ? WHERE id = ?;`,
+        setOrder,
+        sectionId
+      );
+    } else {
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO CmsSection (page_slug, section_key, "order") VALUES (?, ?, ?);`,
+        page_slug,
+        section_key,
+        setOrder
+      );
+      const newlyCreated: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM CmsSection WHERE page_slug = ? AND section_key = ? LIMIT 1;`,
+        page_slug,
+        section_key
+      );
+      sectionId = newlyCreated[0].id;
     }
+
+    // Helper for Upserting Translation (compatible with PostgreSQL & SQLite)
+    const upsertTranslation = async (locale: string, langData: any) => {
+      if (!langData) return;
+      const extraJsonStr = langData.extra_json ? JSON.stringify(langData.extra_json) : null;
+      const title = langData.title || '';
+      const subtitle = langData.subtitle || '';
+      const bodyText = langData.body || '';
+
+      const existingTrans: any[] = await prisma.$queryRawUnsafe(
+        `SELECT id FROM CmsSectionTranslation WHERE section_id = ? AND locale = ? LIMIT 1;`,
+        sectionId,
+        locale
+      );
+
+      if (existingTrans && existingTrans.length > 0) {
+        await prisma.$executeRawUnsafe(
+          `UPDATE CmsSectionTranslation SET title = ?, subtitle = ?, body = ?, extra_json = ? WHERE section_id = ? AND locale = ?;`,
+          title,
+          subtitle,
+          bodyText,
+          extraJsonStr,
+          sectionId,
+          locale
+        );
+      } else {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO CmsSectionTranslation (section_id, locale, title, subtitle, body, extra_json) VALUES (?, ?, ?, ?, ?, ?);`,
+          sectionId,
+          locale,
+          title,
+          subtitle,
+          bodyText,
+          extraJsonStr
+        );
+      }
+    };
+
+    if (vi) await upsertTranslation('vi', vi);
+    if (en) await upsertTranslation('en', en);
 
     return NextResponse.json({ success: true });
   } catch (error) {
