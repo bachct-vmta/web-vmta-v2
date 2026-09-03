@@ -17,9 +17,9 @@ const defaultSections = [
         cta_primary_url: '#section-about',
         cta_secondary_label: 'LIÊN HỆ TƯ VẤN',
         cta_secondary_url: '/vi/lien-he',
-        image_url: '/images/home/hero/banner-bg.png',
-        image_url_vi: '/images/home/hero/banner-bg.png',
-        image_url_en: '/images/home/hero/banner-bg.png',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444013/vmta_hero_banner.png',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444013/vmta_hero_banner.png',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444013/vmta_hero_banner.png',
         items: [
           { title: 'BỆNH VIỆN ĐẠT CHUẨN', body: 'JCI / ISO INTERNATIONAL' },
           { title: 'ĐỘI NGŨ BÁC SĨ', body: 'CHUYÊN GIA ĐẦU NGÀNH' },
@@ -37,9 +37,9 @@ const defaultSections = [
         cta_primary_url: '#section-about',
         cta_secondary_label: 'CONTACT CONSULTANT',
         cta_secondary_url: '/en/lien-he',
-        image_url: '/images/home/hero/banner-bg.png',
-        image_url_vi: '/images/home/hero/banner-bg.png',
-        image_url_en: '/images/home/hero/banner-bg.png',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444013/vmta_hero_banner.png',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444013/vmta_hero_banner.png',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444013/vmta_hero_banner.png',
         items: [
           { title: 'ACCREDITED HOSPITALS', body: 'JCI / ISO CERTIFIED' },
           { title: 'MEDICAL TEAM', body: 'TOP SPECIALISTS' },
@@ -58,9 +58,9 @@ const defaultSections = [
       subtitle: 'TỰ HÀO LÀ CẦU NỐI Y TẾ VÀ DU LỊCH NGHỈ DƯỠNG UY TÍN',
       body: 'Mọi cơ sở y tế và đội ngũ chuyên gia trong liên minh đều trải qua quy trình thẩm định khắt khe trước khi tiếp nhận du khách.',
       extra_json: {
-        image_url: '/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png',
-        image_url_vi: '/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png',
-        image_url_en: '/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
         items: [
           { title: 'Niềm tin từ chuyên môn', body: 'Mọi cơ sở y tế và đội ngũ chuyên gia trong liên minh đều trải qua quy trình thẩm định khắt khe trước khi tiếp nhận du khách.', icon_url: '/images/home/values/icon-1.png' },
           { title: 'Sự minh bạch tuyệt đối', body: 'Minh bạch về chi phí, quy trình điều trị, tiêu chuẩn dịch vụ và quyền lợi của khách hàng trong suốt hành trình.', icon_url: '/images/home/values/icon-2.png' },
@@ -75,9 +75,9 @@ const defaultSections = [
       subtitle: 'PROUD TO BE VIETNAM’S PREMIER MEDICAL TOURISM ALLIANCE',
       body: 'Every medical center and expert team undergoes strict vetting before accepting patients.',
       extra_json: {
-        image_url: '/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png',
-        image_url_vi: '/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png',
-        image_url_en: '/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
         items: [
           { title: 'TRUST FROM EXPERTISE', body: 'Every medical center and expert team undergoes strict vetting before accepting patients.', icon_url: '/images/home/values/icon-1.png' },
           { title: 'ABSOLUTE TRANSPARENCY', body: 'Full transparency in treatment costs, procedures, and patient rights throughout the journey.', icon_url: '/images/home/values/icon-2.png' },
@@ -99,9 +99,9 @@ const defaultSections = [
       extra_json: {
         cta_label: 'KHÁM PHÁ THÊM',
         cta_url: '/vi/gioi-thieu',
-        image_url: '/images/about/Asset-7-100.jpg',
-        image_url_vi: '/images/about/Asset-7-100.jpg',
-        image_url_en: '/images/about/Asset-7-100.jpg',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
         bullets: [
           'Hệ thống tiếp nhận và điều phối hồ sơ bệnh án thông minh.',
           'Minh bạch quy trình và bảo chứng chất lượng dịch vụ tại mọi điểm chạm.',
@@ -116,9 +116,9 @@ const defaultSections = [
       extra_json: {
         cta_label: 'DISCOVER MORE',
         cta_url: '/en/gioi-thieu',
-        image_url: '/images/about/Asset-7-100.jpg',
-        image_url_vi: '/images/about/Asset-7-100.jpg',
-        image_url_en: '/images/about/Asset-7-100.jpg',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
         bullets: [
           'Intelligent medical record intake and coordination system.',
           '100% transparent procedures and quality assurance at every touchpoint.',
@@ -166,9 +166,9 @@ const defaultSections = [
       body: 'Trở thành biểu tượng bảo chứng cho chất lượng Du lịch Y tế tại Việt Nam, đưa Việt Nam trở thành điểm đến ưu tiên trên bản đồ y khoa toàn cầu.',
       extra_json: {
         video_url: 'https://storageovp.vnews.gov.vn//mediacache//2026//04//10//TS_QTND_9520_DU//9NIWHWEJC38D//hls//master.m3u8',
-        image_url: '/images/home/vision-mission/video-poster.webp',
-        image_url_vi: '/images/home/vision-mission/video-poster.webp',
-        image_url_en: '/images/home/vision-mission/video-poster.webp',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444014/vmta_vision_poster.webp',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444014/vmta_vision_poster.webp',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444014/vmta_vision_poster.webp',
         items: [
           { title: 'VỚI KHÁCH HÀNG', body: 'Mang đến hành trình chăm sóc sức khỏe an toàn, cá nhân hóa và không rào cản địa lý.' },
           { title: 'VỚI ĐỐI TÁC', body: 'Xây dựng hệ điều hành kết nối thông minh, giúp nâng cao hiệu quả vận hành và giá trị thương hiệu.' },
@@ -182,9 +182,9 @@ const defaultSections = [
       body: 'To become the gold standard for Medical Tourism in Vietnam — establishing the country as a priority destination on the global medical map.',
       extra_json: {
         video_url: 'https://storageovp.vnews.gov.vn//mediacache//2026//04//10//TS_QTND_9520_DU//9NIWHWEJC38D//hls//master.m3u8',
-        image_url: '/images/home/vision-mission/video-poster.webp',
-        image_url_vi: '/images/home/vision-mission/video-poster.webp',
-        image_url_en: '/images/home/vision-mission/video-poster.webp',
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444014/vmta_vision_poster.webp',
+        image_url_vi: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444014/vmta_vision_poster.webp',
+        image_url_en: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444014/vmta_vision_poster.webp',
         items: [
           { title: 'FOR CLIENTS', body: 'Delivering a safe, premium healthcare journey with end-to-end care and zero geographical barriers.' },
           { title: 'FOR PARTNERS', body: 'Building an intelligent coordination platform that connects hospitals, resorts and technology.' },
@@ -221,6 +221,188 @@ const defaultSections = [
           { title: 'Operational Tech Integration', body: 'Utilize professional medical record and resort recovery coordination operating software.', icon_url: '/images/home/values/icon-3.png' },
           { title: 'Sustainable Growth Partnership', body: 'Participate in trade promotion events and international medical technology seminars.', icon_url: '/images/home/values/icon-1.png' },
         ],
+      },
+    },
+  },
+
+  // ==================== 2. TRANG GIỚI THIỆU (about) ====================
+  {
+    page_slug: 'about',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'KIẾN TRÚC SƯ TRƯỞNG CHO HỆ SINH THÁI DU LỊCH Y TẾ VIỆT NAM',
+      subtitle: 'GIỚI THIỆU VỀ VMTA',
+      body: 'VMTA là đơn vị điều phối độc lập, kết nối và chuẩn hóa các nguồn lực y tế, du lịch và công nghệ.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+    en: {
+      title: 'PIONEERING VIETNAM MEDICAL TOURISM ECOSYSTEM',
+      subtitle: 'ABOUT VMTA',
+      body: 'VMTA acts as an independent coordinator unifying Healthcare, Tourism, and Technology resources.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+  },
+  {
+    page_slug: 'about',
+    section_key: 'architect',
+    order: 2,
+    vi: {
+      title: 'VMTA LÀ AI ?',
+      subtitle: 'ĐƠN VỊ ĐIỀU PHỐI ĐỘC LẬP',
+      body: 'VMTA không phải là một bệnh viện hay công ty lữ hành đơn lẻ. Chúng tôi là thực thể điều phối trung tâm.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+      },
+    },
+    en: {
+      title: 'WHO IS VMTA ?',
+      subtitle: 'INDEPENDENT COORDINATOR',
+      body: 'We are the central orchestrating body unifying medical and travel resources.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+      },
+    },
+  },
+
+  // ==================== 3. TRANG THÀNH TỰU (products) ====================
+  {
+    page_slug: 'products',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'THÀNH TỰU Y KHOA VIỆT NAM',
+      subtitle: 'NĂNG LỰC CHUYÊN MÔN VÀ CÔNG NGHỆ CHỮA LÀNH HÀNG ĐẦU',
+      body: 'Tự hào sở hữu những ca phẫu thuật chuyên sâu sánh ngang các trung tâm y học hàng đầu thế giới.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+    en: {
+      title: 'VIETNAM MEDICAL ACHIEVEMENTS',
+      subtitle: 'TOP-TIER SPECIALIST CAPABILITIES & HEALING TECH',
+      body: 'Delivering complex surgical procedures on par with global medical centers.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+  },
+
+  // ==================== 4. TRANG MẠNG LƯỚI LIÊN MINH (alliance) ====================
+  {
+    page_slug: 'alliance',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'MẠNG LƯỚI LIÊN MINH VMTA',
+      subtitle: 'HỘI TỤ BỆNH VIỆN HẠNG ĐẶC BIỆT, RESORT CAO CẤP & ĐƠN VỊ LỮ HÀNH UY TÍN',
+      body: 'Mạng lưới kết nối chặt chẽ giữa 4 trụ cột: Y tế - Lữ hành - Lưu trú - Công nghệ.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+      },
+    },
+    en: {
+      title: 'VMTA ALLIANCE NETWORK',
+      subtitle: 'UNITING TOP HOSPITALS, RESORTS & TRAVEL OPERATORS',
+      body: 'Strongly integrated network bridging Healthcare, Travel, Accommodation and Technology.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+      },
+    },
+  },
+
+  // ==================== 5. TRANG LIÊN HỆ (contact) ====================
+  {
+    page_slug: 'contact',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'Liên hệ',
+      subtitle: 'Liên hệ với VMTA',
+      body: 'Nơi mọi hành trình chăm sóc sức khỏe được thiết kế riêng',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+    en: {
+      title: 'Contact',
+      subtitle: 'Contact VMTA',
+      body: 'Where every healthcare journey is personalized',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+  },
+
+  // ==================== 6. TRANG PHÁP LÝ: BẢO MẬT (policy_privacy) ====================
+  {
+    page_slug: 'policy_privacy',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'Chính Sách Bảo Mật',
+      subtitle: 'BẢO VỆ DỮ LIỆU & QUYỀN RIÊNG TƯ CỦA DU KHÁCH Y TẾ',
+      body: 'Cam kết bảo mật thông tin hồ sơ y tế, dữ liệu cá nhân và lịch trình nghỉ dưỡng theo chuẩn SLA & HIPAA.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+    en: {
+      title: 'Privacy Policy',
+      subtitle: 'DATA PROTECTION & PRIVACY ASSURANCE',
+      body: 'Committed to safeguarding medical records, personal data and resort itineraries per SLA & HIPAA standards.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443991/vmta_about_hero.png',
+      },
+    },
+  },
+
+  // ==================== 7. TRANG PHÁP LÝ: QUY TẮC ĐẠO ĐỨC (policy_ethics) ====================
+  {
+    page_slug: 'policy_ethics',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'Quy Tắc Đạo Đức & Ứng Xử Thành Viên',
+      subtitle: 'TIÊU CHUẨN ĐẠO ĐỨC NGHỀ NGHIỆP & BẢO CHỨNG CHẤT LƯỢNG LINH HỒN LIÊN MINH',
+      body: 'Bộ quy tắc áp dụng bắt buộc cho toàn bộ Bệnh viện, Resort, Lữ hành và Công nghệ gia nhập hệ sinh thái VMTA.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+      },
+    },
+    en: {
+      title: 'Member Code of Ethics & Conduct',
+      subtitle: 'PROFESSIONAL ETHICAL STANDARDS & ALLIANCE CODE',
+      body: 'Mandatory ethical guidelines governing all Hospitals, Resorts, Travel agencies and Tech partners.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788443995/vmta_about_architect.jpg',
+      },
+    },
+  },
+
+  // ==================== 8. TRANG PHÁP LÝ: QUYỀN LỢI THÀNH VIÊN (policy_benefits) ====================
+  {
+    page_slug: 'policy_benefits',
+    section_key: 'hero',
+    order: 1,
+    vi: {
+      title: 'Quyền Lợi Của Thành Viên Liên Minh',
+      subtitle: 'GIA TĂNG GIÁ TRỊ THƯƠNG HIỆU & TIẾP CẬN TỆP KHÁCH HÀNG TOÀN CẦU',
+      body: 'Hệ thống quyền lợi độc quyền dành cho Bệnh viện, Phòng khám, Khách sạn - Resort và Doanh nghiệp Lữ hành khi chính thức gia nhập VMTA.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
+      },
+    },
+    en: {
+      title: 'Alliance Member Benefits',
+      subtitle: 'ELEVATING BRAND VALUE & GLOBAL PATIENT ACCESS',
+      body: 'Exclusive benefits suite supporting accredited Hospitals, Clinics, Resorts and Travel Agencies upon joining VMTA.',
+      extra_json: {
+        image_url: 'https://res.cloudinary.com/bl0iakcy/image/upload/v1788444005/vmta_values_bg.png',
       },
     },
   },
@@ -287,7 +469,7 @@ async function main() {
     console.log(`Seeded ${item.page_slug}/${item.section_key}`);
   }
 
-  console.log('SUCCESSFULLY SEEDED ALL CMS SECTIONS INTO DATABASE!');
+  console.log('SUCCESSFULLY SEEDED ALL CMS SECTIONS WITH LIVE CLOUDINARY CDN LINKS INTO DATABASE!');
 }
 
 main()

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
+import { decodeHtmlEntities } from '@/lib/utils';
 
 export default async function PostDetailPage({
   params,
@@ -23,7 +24,7 @@ export default async function PostDetailPage({
       post = rawPosts[0];
     }
     relatedPosts = await prisma.$queryRawUnsafe(
-      `SELECT * FROM Post WHERE (slug_vi != ? AND slug != ?) LIMIT 3;`,
+      `SELECT * FROM Post WHERE (slug_vi != ? AND slug != ?) ORDER BY published_at DESC, id DESC LIMIT 3;`,
       slug, slug
     );
   } catch (err) {
@@ -34,9 +35,11 @@ export default async function PostDetailPage({
     return notFound();
   }
 
-  const title = isVi ? (post.title_vi || post.title_en) : (post.title_en || post.title_vi);
-  const summary = isVi ? (post.summary_vi || post.summary_en) : (post.summary_en || post.summary_vi);
-  const content = isVi ? (post.content_vi || post.content_en) : (post.content_en || post.content_vi);
+  const title = decodeHtmlEntities(isVi ? (post.title_vi || post.title_en) : (post.title_en || post.title_vi));
+  const summary = decodeHtmlEntities(isVi ? (post.summary_vi || post.summary_en) : (post.summary_en || post.summary_vi));
+  const rawContent = isVi ? (post.content_vi || post.content_en) : (post.content_en || post.content_vi);
+  const content = decodeHtmlEntities(rawContent);
+  const pubDate = post.published_at || String(post.created_at || '').substring(0, 10);
 
   return (
     <article className="bg-white font-sans space-y-0 pb-20">
@@ -56,7 +59,7 @@ export default async function PostDetailPage({
               {post.category || 'Sự kiện VMTA'}
             </span>
             <span className="text-xs text-slate-300">
-              📅 {String(post.created_at || '').substring(0, 10)} | ✍️ {post.author}
+              📅 {pubDate} | ✍️ {post.author}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-tight text-white">
@@ -78,9 +81,11 @@ export default async function PostDetailPage({
 
       {/* Main Content Area */}
       <section className="max-w-4xl mx-auto px-4 pt-10 pb-16">
-        <div className="p-6 bg-teal-50/70 border-l-4 border-[#0b7f7c] rounded-r-2xl mb-8 font-bold text-sm md:text-base text-slate-800 leading-relaxed italic">
-          {summary}
-        </div>
+        {summary && (
+          <div className="p-6 bg-teal-50/70 border-l-4 border-[#0b7f7c] rounded-r-2xl mb-8 font-bold text-sm md:text-base text-slate-800 leading-relaxed italic">
+            {summary}
+          </div>
+        )}
 
         {/* Render HTML Content */}
         <div
@@ -112,7 +117,7 @@ export default async function PostDetailPage({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedPosts.map((rp) => {
-                const rpTitle = isVi ? (rp.title_vi || rp.title_en) : (rp.title_en || rp.title_vi);
+                const rpTitle = decodeHtmlEntities(isVi ? (rp.title_vi || rp.title_en) : (rp.title_en || rp.title_vi));
                 const rpSlug = isVi ? (rp.slug_vi || rp.slug) : (rp.slug_en || rp.slug);
                 return (
                   <article key={rp.id} className="bg-slate-50 rounded-2xl border border-slate-200 p-4 space-y-2 shadow-xs">

@@ -12,16 +12,18 @@ import { PostsManager } from '@/components/admin/PostsManager';
 import { MediaManager } from '@/components/admin/MediaManager';
 import { InquiriesManager } from '@/components/admin/InquiriesManager';
 import { ChatbotManager } from '@/components/admin/ChatbotManager';
+import { SiteSettingsManager } from '@/components/admin/SiteSettingsManager';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   // Login form state
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [loginError, setLoginError] = useState('');
+  const [submittingLogin, setSubmittingLogin] = useState(false);
 
   // Active top navigation tab
   const [activeNavTab, setActiveNavTab] = useState('cms');
@@ -38,20 +40,35 @@ export default function AdminPage() {
     setLoadingAuth(false);
   }, []);
 
-  // Handle Login Submit
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle Login Submit via Secure API
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setSubmittingLogin(true);
 
-    if ((username === 'admin' || username === 'vmta@vmta.vn') && (password === 'admin' || password === '123456')) {
-      setIsAuthenticated(true);
-      if (rememberMe) {
-        localStorage.setItem('vmta_admin_auth', 'authenticated');
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setIsAuthenticated(true);
+        if (rememberMe) {
+          localStorage.setItem('vmta_admin_auth', 'authenticated');
+        } else {
+          sessionStorage.setItem('vmta_admin_auth', 'authenticated');
+        }
       } else {
-        sessionStorage.setItem('vmta_admin_auth', 'authenticated');
+        setLoginError(data.error || 'Tên đăng nhập hoặc mật khẩu không chính xác.');
       }
-    } else {
-      setLoginError('Tài khoản hoặc mật khẩu không chính xác. Mẫu: admin / 123456');
+    } catch {
+      setLoginError('Lỗi kết nối máy chủ khi xác thực đăng nhập.');
+    } finally {
+      setSubmittingLogin(false);
     }
   };
 
@@ -70,7 +87,7 @@ export default function AdminPage() {
     );
   }
 
-  // --- RENDER LOGIN FORM IF NOT AUTHENTICATED ---
+  // --- RENDER SECURE LOGIN FORM IF NOT AUTHENTICATED ---
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-[#064e4b] to-slate-950 flex items-center justify-center p-4 font-utm-helve">
@@ -96,7 +113,7 @@ export default function AdminPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Nhập 'admin'..."
+                placeholder="Nhập tên đăng nhập..."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-[#0b7f7c] outline-none"
                 required
               />
@@ -108,7 +125,7 @@ export default function AdminPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nhập '123456'..."
+                placeholder="Nhập mật khẩu..."
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-[#0b7f7c] outline-none"
                 required
               />
@@ -124,15 +141,14 @@ export default function AdminPage() {
                 />
                 <span>Ghi nhớ đăng nhập</span>
               </label>
-
-              <span className="text-[11px] text-slate-400 font-mono">Mặc định: admin / 123456</span>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#0b7f7c] text-white font-bold uppercase text-xs rounded-xl shadow-lg hover:bg-[#086a67] transition"
+              disabled={submittingLogin}
+              className="w-full py-3.5 bg-[#0b7f7c] text-white font-bold uppercase text-xs rounded-xl shadow-lg hover:bg-[#086a67] transition disabled:opacity-50"
             >
-              🔐 ĐĂNG NHẬP HỆ THỐNG
+              {submittingLogin ? '⏳ Đang xác thực...' : '🔐 ĐĂNG NHẬP HỆ THỐNG'}
             </button>
           </form>
 
@@ -190,7 +206,10 @@ export default function AdminPage() {
           {/* TAB 7: CHATBOT SCRIPTS & EMAIL ESCALATION */}
           {activeNavTab === 'chatbot' && <ChatbotManager />}
 
-          {/* TAB 8: DASHBOARD STATS */}
+          {/* TAB 8: GLOBAL SITE SETTINGS */}
+          {activeNavTab === 'settings' && <SiteSettingsManager />}
+
+          {/* TAB 9: DASHBOARD STATS */}
           {activeNavTab === 'dashboard' && <AdminDashboard />}
         </main>
       </div>

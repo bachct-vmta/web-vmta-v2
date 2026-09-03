@@ -13,15 +13,15 @@ export interface SectionContent {
   items?: any[];
   bullets?: string[];
   extra_json?: any;
+  hasContent?: boolean;
 }
 
 export async function getOrderedPageSections(pageSlug: string): Promise<string[]> {
   try {
-    const rawSections: any[] = await prisma.$queryRawUnsafe(`
-      SELECT section_key FROM CmsSection
-      WHERE page_slug = '${pageSlug}'
-      ORDER BY "order" ASC, id ASC
-    `);
+    const rawSections: any[] = await prisma.$queryRawUnsafe(
+      `SELECT section_key FROM CmsSection WHERE page_slug = ? ORDER BY "order" ASC, id ASC;`,
+      pageSlug
+    );
     if (rawSections && rawSections.length > 0) {
       return rawSections.map((s) => s.section_key);
     }
@@ -38,17 +38,14 @@ export async function getSectionContent(
   fallback: SectionContent = {}
 ): Promise<SectionContent> {
   try {
-    const rawTranslations: any[] = await prisma.$queryRawUnsafe(`
-      SELECT 
-        t.locale,
-        t.title,
-        t.subtitle,
-        t.body,
-        t.extra_json
-      FROM CmsSection s
-      JOIN CmsSectionTranslation t ON s.id = t.section_id
-      WHERE s.page_slug = '${pageSlug}' AND s.section_key = '${sectionKey}'
-    `);
+    const rawTranslations: any[] = await prisma.$queryRawUnsafe(
+      `SELECT t.locale, t.title, t.subtitle, t.body, t.extra_json
+       FROM CmsSection s
+       JOIN CmsSectionTranslation t ON s.id = t.section_id
+       WHERE s.page_slug = ? AND s.section_key = ?;`,
+      pageSlug,
+      sectionKey
+    );
 
     if (rawTranslations && rawTranslations.length > 0) {
       const tr = rawTranslations.find((t: any) => t.locale === locale) || rawTranslations[0];
@@ -73,9 +70,9 @@ export async function getSectionContent(
       let bullets = parsedExtra.bullets !== undefined ? parsedExtra.bullets : fallback.bullets;
 
       return {
-        title: tr.title !== null && tr.title !== undefined ? tr.title : (fallback.title || ''),
-        subtitle: tr.subtitle !== null && tr.subtitle !== undefined ? tr.subtitle : (fallback.subtitle || ''),
-        body: tr.body !== null && tr.body !== undefined ? tr.body : (fallback.body || ''),
+        title: tr.title !== null && tr.title !== undefined ? tr.title : '',
+        subtitle: tr.subtitle !== null && tr.subtitle !== undefined ? tr.subtitle : '',
+        body: tr.body !== null && tr.body !== undefined ? tr.body : '',
         cta_label: ctaLabel,
         cta_url: ctaUrl,
         video_url: videoUrl,
@@ -85,24 +82,27 @@ export async function getSectionContent(
         items,
         bullets,
         extra_json: parsedExtra,
+        hasContent: true,
       };
     }
   } catch (error) {
     console.error(`Error loading section ${pageSlug}/${sectionKey}:`, error);
   }
 
+  // Unseeded / Blank State: Return empty strings unless explicitly seeded
   return {
-    title: fallback.title || '',
-    subtitle: fallback.subtitle || '',
-    body: fallback.body || '',
-    cta_label: fallback.cta_label || '',
-    cta_url: fallback.cta_url || '',
-    video_url: fallback.video_url || '',
-    image_url: fallback.image_url || '',
-    image_url_vi: fallback.image_url_vi || fallback.image_url || '',
-    image_url_en: fallback.image_url_en || fallback.image_url || '',
-    items: fallback.items,
-    bullets: fallback.bullets,
-    extra_json: fallback.extra_json,
+    title: '',
+    subtitle: '',
+    body: '',
+    cta_label: '',
+    cta_url: '',
+    video_url: '',
+    image_url: '',
+    image_url_vi: '',
+    image_url_en: '',
+    items: [],
+    bullets: [],
+    extra_json: {},
+    hasContent: false,
   };
 }

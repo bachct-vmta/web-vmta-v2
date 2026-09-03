@@ -6,8 +6,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page_slug = searchParams.get('page_slug') || 'home';
 
-    const rawSections: any[] = await prisma.$queryRawUnsafe(`
-      SELECT 
+    const rawSections: any[] = await prisma.$queryRawUnsafe(
+      `SELECT 
         s.id as section_id,
         s.page_slug,
         s.section_key,
@@ -20,9 +20,10 @@ export async function GET(req: Request) {
         t.extra_json
       FROM CmsSection s
       LEFT JOIN CmsSectionTranslation t ON s.id = t.section_id
-      WHERE s.page_slug = '${page_slug}'
-      ORDER BY s."order" ASC, s.id ASC
-    `);
+      WHERE s.page_slug = ?
+      ORDER BY s."order" ASC, s.id ASC;`,
+      page_slug
+    );
 
     const sectionsMap = new Map<string, any>();
 

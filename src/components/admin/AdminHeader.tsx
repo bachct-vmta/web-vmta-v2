@@ -21,6 +21,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     { id: 'media', label: '📁 QUẢN LÝ MEDIA', desc: 'Thư viện ảnh Cloud CDN' },
     { id: 'inquiries', label: '📩 YÊU CẦU & NEWSLETTER', desc: 'Tiếp nhận Leads & Email' },
     { id: 'chatbot', label: '🤖 CHATBOT & CSKH 1-1', desc: 'Kịch bản, Thống kê & Email CSKH' },
+    { id: 'settings', label: '⚙️ CẤU HÌNH WEBSITE', desc: 'Hotline, Trụ sở & Mạng xã hội' },
     { id: 'dashboard', label: '📊 DASHBOARD', desc: 'Đánh giá hiệu quả trang web' },
   ];
 

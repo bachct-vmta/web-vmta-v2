@@ -257,7 +257,7 @@ export const PostsManager: React.FC = () => {
             <form onSubmit={handleSave} className="space-y-4">
               {activeFormTab === 'content' ? (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">Trạng thái xuất bản</label>
                       <select
@@ -281,6 +281,9 @@ export const PostsManager: React.FC = () => {
                         <option value="Y học & Du lịch">🩺 Y học & Du lịch</option>
                         <option value="Hội thảo & Đào tạo">🎓 Hội thảo & Đào tạo</option>
                         <option value="Thông cáo Báo chí">📢 Thông cáo Báo chí</option>
+                        <option value="Chuyên khoa Mắt">👁️ Chuyên khoa Mắt</option>
+                        <option value="Hướng dẫn Du khách">✈️ Hướng dẫn Du khách</option>
+                        <option value="Câu chuyện Thực tế">⭐ Câu chuyện Thực tế</option>
                       </select>
                     </div>
 
@@ -291,6 +294,17 @@ export const PostsManager: React.FC = () => {
                         value={editingPost.author || ''}
                         onChange={(e) => setEditingPost({ ...editingPost, author: e.target.value })}
                         className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Ngày đăng bài (Published Date)</label>
+                      <input
+                        type="text"
+                        placeholder="VD: 10/08/2026 08:00 SA"
+                        value={editingPost.published_at || ''}
+                        onChange={(e) => setEditingPost({ ...editingPost, published_at: e.target.value })}
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-mono"
                       />
                     </div>
                   </div>

@@ -1,18 +1,22 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
+  let scripts: any[] = [];
+  let logs: any[] = [];
   try {
-    const scripts: any[] = await prisma.$queryRawUnsafe(`SELECT * FROM ChatbotScript ORDER BY "order" ASC, id ASC;`);
-    const logs: any[] = await prisma.$queryRawUnsafe(`SELECT * FROM ChatbotLog ORDER BY id DESC;`);
-
-    return NextResponse.json({ scripts, logs });
-  } catch (error) {
-    console.error('Error fetching chatbot data:', error);
-    return NextResponse.json({ scripts: [], logs: [] });
+    scripts = await prisma.$queryRawUnsafe(`SELECT * FROM ChatbotScript ORDER BY "order" ASC, id ASC;`);
+  } catch {
+    scripts = [];
   }
+
+  try {
+    logs = await prisma.$queryRawUnsafe(`SELECT * FROM ChatbotLog ORDER BY id DESC;`);
+  } catch {
+    logs = [];
+  }
+
+  return NextResponse.json({ scripts, logs });
 }
 
 export async function POST(req: Request) {
@@ -36,22 +40,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true });
     }
 
-    // Action 2: Human Live Chat Escalation (Log User Email & Question)
+    // Action 2: Human Live Chat Escalation
     if (action === 'log_escalation') {
       if (!user_email || !user_message) {
         return NextResponse.json({ error: 'Missing user_email or user_message' }, { status: 400 });
       }
 
-      await prisma.$executeRawUnsafe(
-        `INSERT INTO ChatbotLog (user_email, user_phone, user_message, bot_response, status) VALUES (?, ?, ?, ?, 'pending');`,
-        user_email, user_phone || '', user_message, 'Yêu cầu tư vấn 1-1 qua Email đã được chuyển tới chuyên viên VMTA.'
-      );
+      try {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO ChatbotLog (user_email, user_phone, user_message, bot_response, status) VALUES (?, ?, ?, ?, 'pending');`,
+          user_email, user_phone || '', user_message, 'Yêu cầu tư vấn 1-1 qua Email đã được chuyển tới chuyên viên VMTA.'
+        );
+      } catch {}
 
-      // Also create an Inquiry record automatically so it appears in Inquiry Manager
-      await prisma.$executeRawUnsafe(
-        `INSERT INTO Inquiry (full_name, phone, email, organization, content) VALUES (?, ?, ?, ?, ?);`,
-        `Khách Chatbot (${user_email})`, user_phone || '', user_email, 'Yêu cầu tư vấn qua Chatbot Widget', user_message
-      );
+      try {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO Inquiry (name, phone, email, service, message) VALUES (?, ?, ?, ?, ?);`,
+          `Khách Chatbot (${user_email})`, user_phone || '', user_email, 'Chatbot Escalation', user_message
+        );
+      } catch {}
 
       return NextResponse.json({ success: true });
     }

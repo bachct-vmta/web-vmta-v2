@@ -24,6 +24,10 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
     { id: 'products', label: 'Trang Thành Tựu Y Khoa', icon: '🏆' },
     { id: 'alliance', label: 'Mạng Lưới Liên Minh', icon: '🌐' },
     { id: 'contact', label: 'Trang Liên Hệ (Contact)', icon: '📞' },
+    { id: 'chuyen-khoa', label: 'Chuyên Khoa Nha Khoa', icon: '🦷' },
+    { id: 'policy_privacy', label: 'Chính Sách Bảo Mật', icon: '🔒' },
+    { id: 'policy_ethics', label: 'Quy Tắc Đạo Đức & Ứng Xử', icon: '📜' },
+    { id: 'policy_benefits', label: 'Quyền Lợi Thành Viên', icon: '🎁' },
   ];
 
   return (

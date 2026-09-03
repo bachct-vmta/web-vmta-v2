@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface FooterProps {
@@ -12,6 +12,33 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const isVi = locale === 'vi';
+
+  const [settings, setSettings] = useState<Record<string, string>>({
+    site_name: 'Vietnam Medical Tourism Alliance',
+    site_hotline: '1900-1234',
+    site_address: '193 Trích Sài, Phường Tây Hồ, Hà Nội',
+    site_support_email: 'vmta@vmta.vn',
+    social_facebook: '#',
+    social_instagram: '#',
+    social_youtube: '#',
+    social_tiktok: '#',
+    bo_cong_thuong_badge: '/images/home/footer/vmta-bo-y-te-badge.png',
+  });
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/admin/settings');
+        if (res.ok) {
+          const data = await res.json();
+          setSettings((prev) => ({ ...prev, ...data.settings }));
+        }
+      } catch (err) {
+        console.warn('Error loading footer settings:', err);
+      }
+    }
+    loadSettings();
+  }, []);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +68,8 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
   };
 
   return (
-    <footer className="footer-wrapper bg-white border-t border-slate-100 relative">
+    <footer className="footer-wrapper bg-white border-t border-slate-100 relative font-utm-helve">
       <section className="relative overflow-hidden py-16 md:py-24 bg-white">
-        {/* Background image matching footer.blade.php */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           <img
             src="/images/about/908c99ad-f012-4b20-9d8a-cbeee71686e5.png"
@@ -70,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
               <h3 className="uppercase text-[#0b7f7c] mb-4 font-bold text-base tracking-wide">
                 {isVi ? 'ĐĂNG KÝ NHẬN BẢN TIN Y TẾ' : 'SUBSCRIBE TO MEDICAL NEWSLETTER'}
               </h3>
-              {status && <p className="text-sm text-[#0b7f7c] mb-2">{status}</p>}
+              {status && <p className="text-sm text-[#0b7f7c] mb-2 font-bold">{status}</p>}
               <form onSubmit={handleSubscribe} className="relative max-w-md">
                 <input
                   type="email"
@@ -99,17 +125,17 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
                 {isVi ? 'KẾT NỐI VỚI VMTA' : 'CONNECT WITH VMTA'}
               </h3>
               <div className="flex items-center md:justify-end gap-3">
-                <a href="#" aria-label="Facebook" className="block max-h-[45px]">
-                  <img src="/images/home/footer/social-1.png" alt="Facebook" className="h-10 w-auto" />
+                <a href={settings.social_facebook || '#'} target="_blank" rel="noreferrer" aria-label="Facebook" className="block max-h-[45px]">
+                  <img src="/images/home/footer/social-1.png" alt="Facebook" className="h-10 w-auto hover:opacity-80 transition" />
                 </a>
-                <a href="#" aria-label="Instagram" className="block max-h-[45px]">
-                  <img src="/images/home/footer/social-2.png" alt="Instagram" className="h-10 w-auto" />
+                <a href={settings.social_instagram || '#'} target="_blank" rel="noreferrer" aria-label="Instagram" className="block max-h-[45px]">
+                  <img src="/images/home/footer/social-2.png" alt="Instagram" className="h-10 w-auto hover:opacity-80 transition" />
                 </a>
-                <a href="#" aria-label="YouTube" className="block max-h-[45px]">
-                  <img src="/images/home/footer/social-3.png" alt="YouTube" className="h-10 w-auto" />
+                <a href={settings.social_youtube || '#'} target="_blank" rel="noreferrer" aria-label="YouTube" className="block max-h-[45px]">
+                  <img src="/images/home/footer/social-3.png" alt="YouTube" className="h-10 w-auto hover:opacity-80 transition" />
                 </a>
-                <a href="#" aria-label="TikTok" className="block max-h-[45px]">
-                  <img src="/images/home/footer/social-4.png" alt="TikTok" className="h-10 w-auto" />
+                <a href={settings.social_tiktok || '#'} target="_blank" rel="noreferrer" aria-label="TikTok" className="block max-h-[45px]">
+                  <img src="/images/home/footer/social-4.png" alt="TikTok" className="h-10 w-auto hover:opacity-80 transition" />
                 </a>
               </div>
             </div>
@@ -120,37 +146,47 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
             {/* Col 1: Company Info */}
             <div className="space-y-3">
               <p className="font-bold text-[#0b7f7c] text-lg leading-snug">
-                {isVi ? 'Vietnam Medical Tourism Alliance' : 'Vietnam Medical Tourism Alliance'}
+                {settings.site_name || 'Vietnam Medical Tourism Alliance'}
               </p>
               <p className="text-xs leading-relaxed text-justify">
                 {isVi
                   ? 'VMTA là liên minh du lịch y tế chính thức của Việt Nam xây dựng mô hình vận hành khép kín giữa Bệnh viện – Resort – Công nghệ'
                   : 'VMTA is the official medical-tourism alliance of Vietnam, building a closed-loop operating model between Hospitals – Resorts – Technology.'}
               </p>
-              <p className="text-xs font-semibold">
-                {isVi ? 'Địa chỉ: 193 Trích Sài, Phường Tây Hồ, Hà Nội' : 'Address: 193 Trich Sai, Tay Ho Ward, Hanoi'}
+              <p className="text-xs font-semibold text-slate-700">
+                {isVi ? 'Địa chỉ:' : 'Address:'} {settings.site_address || '193 Trích Sài, Phường Tây Hồ, Hà Nội'}
               </p>
-              <img
-                src="/images/home/footer/vmta-bo-y-te-badge.png"
-                alt="Đã thông báo Bộ Công Thương"
-                className="w-36 h-auto mt-2"
-              />
+              {settings.bo_cong_thuong_badge && (
+                <img
+                  src={settings.bo_cong_thuong_badge}
+                  alt="Đã thông báo Bộ Công Thương"
+                  className="w-36 h-auto mt-2"
+                />
+              )}
             </div>
 
             {/* Col 2: Policies */}
             <div>
               <h4 className="font-bold text-[#0b7f7c] text-base mb-3">
-                {isVi ? 'CHÍNH SÁCH' : 'POLICIES'}
+                {isVi ? 'CHÍNH SÁCH & ĐẠO ĐỨC' : 'POLICIES & ETHICS'}
               </h4>
-              <ul className="space-y-2 text-xs font-medium">
+              <ul className="space-y-2.5 text-xs font-medium">
                 <li>
-                  <Link href={`/${locale}/gioi-thieu`} className="hover:text-[#0b7f7c] transition">
-                    {isVi ? 'Chính Sách bảo mật' : 'Privacy Policy'}
+                  <Link href={`/${locale}/chinh-sach-bao-mat`} className="hover:text-[#0b7f7c] transition flex items-center gap-1.5">
+                    <span>📌</span>
+                    <span>{isVi ? 'Chính Sách bảo mật' : 'Privacy Policy'}</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href={`/${locale}/gioi-thieu`} className="hover:text-[#0b7f7c] transition">
-                    {isVi ? 'Chính Sách thanh toán' : 'Payment Policy'}
+                  <Link href={`/${locale}/quy-tac-dao-duc-va-ung-xu-cua-thanh-vien`} className="hover:text-[#0b7f7c] transition flex items-center gap-1.5">
+                    <span>📌</span>
+                    <span>{isVi ? 'Quy tắc đạo đức & ứng xử thành viên' : 'Member Code of Ethics & Conduct'}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/${locale}/quyen-loi-cua-thanh-vien-lien-minh`} className="hover:text-[#0b7f7c] transition flex items-center gap-1.5">
+                    <span>📌</span>
+                    <span>{isVi ? 'Quyền lợi của thành viên Liên Minh' : 'Alliance Member Benefits'}</span>
                   </Link>
                 </li>
               </ul>
@@ -161,30 +197,38 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
               <h4 className="font-bold text-[#0b7f7c] text-base mb-3">
                 {isVi ? 'LIÊN KẾT' : 'QUICK LINKS'}
               </h4>
-              <ul className="space-y-2 text-xs font-medium">
+              <ul className="space-y-2.5 text-xs font-medium">
                 <li>
-                  <Link href={`/${locale}/lien-minh-du-lich-y-te`} className="hover:text-[#0b7f7c] transition">
-                    {isVi ? 'Đăng ký doanh nghiệp' : 'Register your business'}
+                  <Link href={`/${locale}/lien-he#partner-form`} className="hover:text-[#0b7f7c] transition flex items-center gap-1.5">
+                    <span>🤝</span>
+                    <span>{isVi ? 'Đăng ký doanh nghiệp liên minh' : 'Register alliance business'}</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href={`/${locale}/gioi-thieu`} className="hover:text-[#0b7f7c] transition">
-                    {isVi ? 'Tìm hiểu thêm về chương trình' : 'Learn more about the program'}
+                  <Link href={`/${locale}/gioi-thieu`} className="hover:text-[#0b7f7c] transition flex items-center gap-1.5">
+                    <span>ℹ️</span>
+                    <span>{isVi ? 'Tìm hiểu thêm về chương trình' : 'Learn more about the program'}</span>
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Col 4: Support */}
+            {/* Col 4: Support & Hotline */}
             <div>
               <h4 className="font-bold text-[#0b7f7c] text-base mb-3">
                 {isVi ? 'HỖ TRỢ KHÁCH HÀNG' : 'CUSTOMER SUPPORT'}
               </h4>
-              <ul className="space-y-2 text-xs font-medium">
+              <ul className="space-y-2.5 text-xs font-medium">
+                <li>
+                  <span>Hotline: </span>
+                  <a href={`tel:${settings.site_hotline || '1900-1234'}`} className="text-[#d31e45] hover:underline font-bold font-mono">
+                    {settings.site_hotline || '1900-1234'}
+                  </a>
+                </li>
                 <li>
                   <span>Email: </span>
-                  <a href="mailto:vmta@vmta.vn" className="text-[#0b7f7c] hover:underline font-semibold">
-                    vmta@vmta.vn
+                  <a href={`mailto:${settings.site_support_email || 'vmta@vmta.vn'}`} className="text-[#0b7f7c] hover:underline font-semibold font-mono">
+                    {settings.site_support_email || 'vmta@vmta.vn'}
                   </a>
                 </li>
               </ul>

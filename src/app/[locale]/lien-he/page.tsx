@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getSectionContent } from '@/lib/cms';
+import { prisma } from '@/lib/prisma';
 import { AllianceJoinForm } from '@/components/contact/AllianceJoinForm';
 
 export default async function ContactPage({
@@ -11,6 +12,27 @@ export default async function ContactPage({
   const { locale } = await params;
   const isVi = locale === 'vi';
 
+  // 1. Fetch Dynamic Site Settings from Database
+  let settingsMap: Record<string, string> = {
+    site_name: 'Vietnam Medical Tourism Alliance',
+    site_hotline: '1900-1234',
+    site_address: '193 Trích Sài, Phường Tây Hồ, Hà Nội',
+    site_branch_address: 'Chi nhánh VMTA',
+    site_support_email: 'vmta@vmta.vn',
+  };
+
+  try {
+    const rawSettings: any[] = await prisma.$queryRawUnsafe(`SELECT key, value FROM Setting;`);
+    (rawSettings || []).forEach((row) => {
+      if (row.key && row.value) {
+        settingsMap[row.key] = row.value;
+      }
+    });
+  } catch (err) {
+    console.warn('Error fetching settings for contact page:', err);
+  }
+
+  // 2. Fetch CMS Section Content
   const heroCms = await getSectionContent('contact', 'hero', locale, {
     title: isVi ? 'Liên hệ' : 'Contact',
     subtitle: isVi ? 'Liên hệ với VMTA' : 'Contact VMTA',
@@ -22,8 +44,10 @@ export default async function ContactPage({
 
   const officesCms = await getSectionContent('contact', 'offices', locale, {
     title: isVi ? 'Thông tin liên hệ trực tiếp' : 'Direct Contact Information',
-    subtitle: isVi ? 'Trụ sở VMTA: 193 Trích Sài, Phường Tây Hồ, Hà Nội' : 'VMTA Headquarters: 193 Trich Sai, Tay Ho Ward, Hanoi',
-    body: 'Email: vmta@vmta.vn',
+    subtitle: isVi
+      ? `Trụ sở VMTA: ${settingsMap.site_address}`
+      : `VMTA Headquarters: ${settingsMap.site_address}`,
+    body: `Email: ${settingsMap.site_support_email}`,
     image_url: '/images/contact/section-image.jpg',
   });
 
@@ -31,46 +55,46 @@ export default async function ContactPage({
     ? [
         {
           name: 'Trụ sở VMTA',
-          address: '193 Trích Sài, Phường Tây Hồ, Hà Nội',
-          email: 'vmta@vmta.vn',
-          phone: '',
+          address: settingsMap.site_address || '193 Trích Sài, Phường Tây Hồ, Hà Nội',
+          email: settingsMap.site_support_email || 'vmta@vmta.vn',
+          phone: settingsMap.site_hotline || '1900-1234',
           note: '',
         },
         {
           name: 'Chi nhánh VMTA',
-          address: 'Chi nhánh VMTA',
-          email: 'vmta@vmta.vn',
-          phone: '',
+          address: settingsMap.site_branch_address || 'Chi nhánh VMTA',
+          email: settingsMap.site_support_email || 'vmta@vmta.vn',
+          phone: settingsMap.site_hotline || '1900-1234',
           note: '',
         },
         {
           name: 'Hỗ trợ kỹ thuật',
           address: '',
-          email: 'vmta@vmta.vn',
-          phone: '',
+          email: settingsMap.site_support_email || 'vmta@vmta.vn',
+          phone: settingsMap.site_hotline || '1900-1234',
           note: '(Phản hồi trong 24h)',
         },
       ]
     : [
         {
           name: 'VMTA Headquarters',
-          address: '193 Trich Sai, Tay Ho Ward, Hanoi',
-          email: 'vmta@vmta.vn',
-          phone: '',
+          address: settingsMap.site_address || '193 Trich Sai, Tay Ho Ward, Hanoi',
+          email: settingsMap.site_support_email || 'vmta@vmta.vn',
+          phone: settingsMap.site_hotline || '1900-1234',
           note: '',
         },
         {
           name: 'VMTA Branch',
-          address: 'VMTA Branch Office',
-          email: 'vmta@vmta.vn',
-          phone: '',
+          address: settingsMap.site_branch_address || 'VMTA Branch Office',
+          email: settingsMap.site_support_email || 'vmta@vmta.vn',
+          phone: settingsMap.site_hotline || '1900-1234',
           note: '',
         },
         {
           name: 'Technical Support',
           address: '',
-          email: 'vmta@vmta.vn',
-          phone: '',
+          email: settingsMap.site_support_email || 'vmta@vmta.vn',
+          phone: settingsMap.site_hotline || '1900-1234',
           note: '(Response within 24h)',
         },
       ];
@@ -111,7 +135,7 @@ export default async function ContactPage({
       </section>
 
       {/* 3. Partner Join Form (Interactive Client Component) */}
-      <section className="relative overflow-hidden py-[56px] md:py-[80px] bg-slate-50 border-b border-slate-200/80">
+      <section id="partner-form" className="relative overflow-hidden py-[56px] md:py-[80px] bg-slate-50 border-b border-slate-200/80">
         <div className="absolute inset-0 opacity-25 pointer-events-none">
           <img src="/images/contact/forms-bg.png" className="w-full h-full object-cover" alt="" />
         </div>
@@ -142,6 +166,11 @@ export default async function ContactPage({
                     {o.address && (
                       <li>
                         {isVi ? 'Địa chỉ' : 'Address'}: {o.address}
+                      </li>
+                    )}
+                    {o.phone && (
+                      <li>
+                        Hotline: {o.phone}
                       </li>
                     )}
                     {o.email && (

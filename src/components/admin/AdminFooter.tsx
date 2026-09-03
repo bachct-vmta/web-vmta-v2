@@ -27,7 +27,7 @@ export const AdminFooter: React.FC = () => {
         <div className="md:col-span-7 space-y-3 md:text-right">
           <div className="flex flex-wrap items-center md:justify-end gap-3">
             <span className="bg-teal-900/80 text-teal-200 border border-teal-700/80 px-3 py-1 rounded-lg text-[11px] font-mono font-bold">
-              VMTA CMS v2.5.0 (Release 2026)
+              VMTA CMS v2.6.0 (Release 2026)
             </span>
             <button
               onClick={() => setShowChangelog(!showChangelog)}
@@ -53,15 +53,24 @@ export const AdminFooter: React.FC = () => {
             <div className="space-y-3 text-[11px] text-slate-300">
               <div className="border-b border-slate-700/80 pb-3 space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-emerald-400 font-mono">v2.5.0 (Mới nhất)</span>
-                  <span className="bg-emerald-900/60 text-emerald-300 text-[10px] px-2 py-0.5 rounded">01/09/2026</span>
+                  <span className="font-bold text-emerald-400 font-mono">v2.6.0 (Mới nhất)</span>
+                  <span className="bg-emerald-900/60 text-emerald-300 text-[10px] px-2 py-0.5 rounded">04/09/2026</span>
+                </div>
+                <ul className="list-disc pl-4 space-y-0.5 text-slate-300">
+                  <li>✨ <b>Khôi phục 100% 16 Bài Viết Tin Tức Thực Tế & Cloudinary CDN</b>: Trích xuất toàn bộ nội dung HTML chi tiết, số liệu chi phí, ảnh bìa và ảnh nhúng trong bài lên Cloudinary CDN (`bl0iakcy`).</li>
+                  <li>✨ <b>Bộ Lọc Tin Tức Thông Minh Không Nảy Trang</b>: Hỗ trợ lọc theo Tag Chuyên mục, lọc Tháng/Năm, ô tìm kiếm từ khóa và chọn Sắp xếp thời gian Tăng/Giảm dần tại chỗ mượt mà.</li>
+                  <li>✨ <b>Đồng Bộ Trang Liên Hệ Cấu Hình Admin</b>: Đọc động các thông số trụ sở, chi nhánh, hotline và email hỗ trợ từ bảng Cấu hình Admin CMS Settings.</li>
+                  <li>✨ <b>Bổ sung Trường Ngày Đăng Bài (`published_at`) & Giải Mã Entity</b>: Cho phép chỉnh sửa mốc thời gian xuất bản lịch sử bài viết trong Admin và sửa triệt để lỗi dấu ngoặc kép `&quot;` trên tiêu đề.</li>
+                </ul>
+              </div>
+              <div className="border-b border-slate-700/80 pb-3 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-teal-400 font-mono">v2.5.0</span>
+                  <span className="bg-slate-700 text-slate-300 text-[10px] px-2 py-0.5 rounded">01/09/2026</span>
                 </div>
                 <ul className="list-disc pl-4 space-y-0.5 text-slate-300">
                   <li>✨ <b>Form Đăng Ký Tham Gia Liên Minh</b>: Tích hợp Client Component xử lý gửi form "Tham gia hệ sinh thái của VMTA" ở trang Liên hệ (`/lien-he`), tự động gửi về Admin <b>YÊU CẦU & NEWSLETTER</b>.</li>
                   <li>✨ <b>Bộ Máy Dịch Tự Động Đa Tầng (VI ➔ EN)</b>: Tích hợp Google GTX Engine, MyMemory API & Từ điển Y tế VMTA, cho phép dịch tự động 100% không cần API Key trả phí.</li>
-                  <li>✨ <b>Cơ Sở Dữ Liệu PostgreSQL 16 & Seed 1-Click</b>: Thêm nút `🌱 NẠP DỮ LIỆU MẪU CSLD (1-CLICK)` trực tiếp trong Admin UI và tương thích ANSI SQL với Vibe Host.</li>
-                  <li>✨ <b>Nén Dung Lượng Next.js Standalone</b>: Nén kích thước build server giảm 80% (từ 1.3GB xuống ~150MB), giải phóng hoàn toàn vạch đỏ lưu trữ trên Vibe Host.</li>
-                  <li>✨ <b>Cloud Storage Cloudinary CDN</b>: Đồng bộ 2 chiều trực tiếp thư viện ảnh Cloudinary (`bl0iakcy`) với tab `📁 QUẢN LÝ MEDIA`.</li>
                 </ul>
               </div>
               <div className="border-b border-slate-700/80 pb-2">

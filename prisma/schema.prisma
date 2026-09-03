@@ -24,85 +24,103 @@ model Setting {
   value      String?
   type       String    @default("string")
   group      String    @default("general")
-  created_at DateTime?
-  updated_at DateTime?
-}
-
-model Category {
-  id         Int                   @id @default(autoincrement())
-  slug       String                @unique
-  is_active  Boolean               @default(true)
-  order      Int                   @default(0)
-  created_at DateTime?
-  updated_at DateTime?
-  translations CategoryTranslation[]
-  posts      Post[]
-}
-
-model CategoryTranslation {
-  id          Int      @id @default(autoincrement())
-  category_id Int
-  locale      String
-  name        String
-  description String?
-  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
-
-  @@unique([category_id, locale])
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 }
 
 model Post {
-  id           Int               @id @default(autoincrement())
-  category_id  Int?
-  slug         String            @unique
-  image        String?
-  is_active    Boolean           @default(true)
-  published_at DateTime?
-  created_at   DateTime?
-  updated_at   DateTime?
-  category     Category?         @relation(fields: [category_id], references: [id])
-  translations PostTranslation[]
+  id                  Int       @id @default(autoincrement())
+  slug                String    @unique
+  slug_vi             String?
+  slug_en             String?
+  category            String?   @default("Sự kiện VMTA")
+  title_vi            String
+  title_en            String?
+  summary_vi          String?
+  summary_en          String?
+  content_vi          String?
+  content_en          String?
+  image_url           String?
+  author              String?   @default("Ban Biên Tập VMTA")
+  status              String?   @default("published")
+  is_published        Boolean   @default(true)
+  published_at        String?
+  meta_title_vi       String?
+  meta_title_en       String?
+  meta_description_vi String?
+  meta_description_en String?
+  meta_keywords_vi    String?
+  meta_keywords_en    String?
+  created_at          DateTime? @default(now())
+  updated_at          DateTime? @updatedAt
 }
 
-model PostTranslation {
-  id         Int     @id @default(autoincrement())
-  post_id    Int
-  locale     String
-  title      String
-  excerpt    String?
-  content    String?
-  seo_title  String?
-  seo_desc   String?
-  post       Post    @relation(fields: [post_id], references: [id], onDelete: Cascade)
-
-  @@unique([post_id, locale])
+model MedicalCategory {
+  id           Int       @id @default(autoincrement())
+  type         String    @default("medical")
+  category_key String    @unique
+  title_vi     String
+  title_en     String?
+  icon         String?
+  created_at   DateTime? @default(now())
+  updated_at   DateTime? @updatedAt
 }
 
-model Page {
-  id           Int               @id @default(autoincrement())
-  slug         String            @unique
-  is_active    Boolean           @default(true)
-  created_at   DateTime?
-  updated_at   DateTime?
-  translations PageTranslation[]
+model MedicalPackage {
+  id            Int       @id @default(autoincrement())
+  category_key  String
+  title_vi      String
+  title_en      String?
+  subtitle_vi   String?
+  subtitle_en   String?
+  duration_vi   String?
+  duration_en   String?
+  price_vi      String?
+  price_en      String?
+  facility_name String?
+  image_url     String?
+  itinerary_vi  String?
+  itinerary_en  String?
+  is_active     Boolean   @default(true)
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @updatedAt
 }
 
-model PageTranslation {
-  id        Int     @id @default(autoincrement())
-  page_id   Int
-  locale    String
-  title     String
-  content   String?
-  seo_title String?
-  seo_desc  String?
-  page      Page    @relation(fields: [page_id], references: [id], onDelete: Cascade)
+model AllianceMember {
+  id             Int       @id @default(autoincrement())
+  group_id       Int       @default(1)
+  name_vi        String
+  name_en        String?
+  badge          String?
+  logo_url       String?
+  address        String?
+  phone          String?
+  email          String?
+  website        String?
+  description_vi String?
+  description_en String?
+  is_active      Boolean   @default(true)
+  created_at     DateTime? @default(now())
+  updated_at     DateTime? @updatedAt
+}
 
-  @@unique([page_id, locale])
+model ChatbotScript {
+  id          Int       @id @default(autoincrement())
+  category    String    @default("Quy trình")
+  question_vi String
+  question_en String?
+  answer_vi   String
+  answer_en   String?
+  order       Int       @default(0)
+  is_active   Boolean   @default(true)
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @updatedAt
 }
 
 model CmsSection {
   id           Int                     @id @default(autoincrement())
-  page_slug    String                  // e.g. 'home', 'about', 'alliance', 'dental', 'products', 'contact'
-  section_key  String                  // e.g. 'hero', 'overview', 'standards', 'map', 'offices'
+  page_slug    String
+  section_key  String
   is_active    Boolean                 @default(true)
   order        Int                     @default(0)
   created_at   DateTime?               @default(now())
@@ -115,48 +133,14 @@ model CmsSection {
 model CmsSectionTranslation {
   id         Int        @id @default(autoincrement())
   section_id Int
-  locale     String     // 'vi' or 'en'
+  locale     String
   title      String?
   subtitle   String?
   body       String?
-  extra_json String?    // JSON string for complex fields like bullets, items, pillars
+  extra_json String?
   section    CmsSection @relation(fields: [section_id], references: [id], onDelete: Cascade)
 
   @@unique([section_id, locale])
-}
-
-model Menu {
-  id         Int        @id @default(autoincrement())
-  code       String     @unique
-  name       String
-  created_at DateTime?
-  updated_at DateTime?
-  items      MenuItem[]
-}
-
-model MenuItem {
-  id           Int                   @id @default(autoincrement())
-  menu_id      Int
-  parent_id    Int?
-  order        Int                   @default(0)
-  url          String?
-  target       String                @default("_self")
-  created_at   DateTime?
-  updated_at   DateTime?
-  menu         Menu                  @relation(fields: [menu_id], references: [id], onDelete: Cascade)
-  parent       MenuItem?             @relation("MenuItemToParent", fields: [parent_id], references: [id])
-  children     MenuItem[]            @relation("MenuItemToParent")
-  translations MenuItemTranslation[]
-}
-
-model MenuItemTranslation {
-  id           Int      @id @default(autoincrement())
-  menu_item_id Int
-  locale       String
-  title        String
-  menu_item    MenuItem @relation(fields: [menu_item_id], references: [id], onDelete: Cascade)
-
-  @@unique([menu_item_id, locale])
 }
 
 model Inquiry {
@@ -167,8 +151,8 @@ model Inquiry {
   service    String?
   message    String?
   status     String    @default("pending")
-  created_at DateTime?
-  updated_at DateTime?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 }
 
 model DentalService {
@@ -178,8 +162,8 @@ model DentalService {
   price        String?
   is_active    Boolean                    @default(true)
   order        Int                        @default(0)
-  created_at   DateTime?
-  updated_at   DateTime?
+  created_at   DateTime?                  @default(now())
+  updated_at   DateTime?                  @updatedAt
   translations DentalServiceTranslation[]
 }
 
@@ -198,6 +182,6 @@ model DentalServiceTranslation {
 model NewsletterSubscriber {
   id         Int       @id @default(autoincrement())
   email      String    @unique
-  created_at DateTime?
-  updated_at DateTime?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 }

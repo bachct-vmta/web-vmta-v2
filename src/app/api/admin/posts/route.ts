@@ -17,7 +17,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    const posts: any[] = await prisma.$queryRawUnsafe(`SELECT * FROM Post ORDER BY id DESC;`);
+    const posts: any[] = await prisma.$queryRawUnsafe(`SELECT * FROM Post ORDER BY published_at DESC, id DESC;`);
     return NextResponse.json({ posts });
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       image_url,
       author,
       status,
+      published_at,
       meta_title_vi,
       meta_title_en,
       meta_description_vi,
@@ -70,17 +71,18 @@ export async function POST(req: Request) {
     const finalSlugEn = slug_en || generateSlug(title_en || title_vi);
     const finalStatus = status || 'published';
     const isPub = finalStatus === 'published';
+    const finalPubAt = published_at || new Date().toISOString().slice(0, 10);
 
     if (id) {
       await prisma.$executeRawUnsafe(
-        `UPDATE Post SET slug=?, slug_vi=?, slug_en=?, category=?, title_vi=?, title_en=?, summary_vi=?, summary_en=?, content_vi=?, content_en=?, image_url=?, author=?, status=?, is_published=?, meta_title_vi=?, meta_title_en=?, meta_description_vi=?, meta_description_en=?, meta_keywords_vi=?, meta_keywords_en=? WHERE id=?;`,
-        finalSlugVi, finalSlugVi, finalSlugEn, category || 'Sự kiện VMTA', title_vi, title_en || title_vi, summary_vi || '', summary_en || '', content_vi || '', content_en || '', image_url || '', author || 'Ban Biên Tập VMTA', finalStatus, isPub, meta_title_vi || title_vi, meta_title_en || title_en || title_vi, meta_description_vi || summary_vi || '', meta_description_en || summary_en || '', meta_keywords_vi || '', meta_keywords_en || '', id
+        `UPDATE Post SET slug=?, slug_vi=?, slug_en=?, category=?, title_vi=?, title_en=?, summary_vi=?, summary_en=?, content_vi=?, content_en=?, image_url=?, author=?, status=?, is_published=?, published_at=?, meta_title_vi=?, meta_title_en=?, meta_description_vi=?, meta_description_en=?, meta_keywords_vi=?, meta_keywords_en=? WHERE id=?;`,
+        finalSlugVi, finalSlugVi, finalSlugEn, category || 'Sự kiện VMTA', title_vi, title_en || title_vi, summary_vi || '', summary_en || '', content_vi || '', content_en || '', image_url || '', author || 'Ban Biên Tập VMTA', finalStatus, isPub, finalPubAt, meta_title_vi || title_vi, meta_title_en || title_en || title_vi, meta_description_vi || summary_vi || '', meta_description_en || summary_en || '', meta_keywords_vi || '', meta_keywords_en || '', id
       );
     } else {
       await prisma.$executeRawUnsafe(
-        `INSERT INTO Post (slug, slug_vi, slug_en, category, title_vi, title_en, summary_vi, summary_en, content_vi, content_en, image_url, author, status, is_published, meta_title_vi, meta_title_en, meta_description_vi, meta_description_en, meta_keywords_vi, meta_keywords_en)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-        finalSlugVi, finalSlugVi, finalSlugEn, category || 'Sự kiện VMTA', title_vi, title_en || title_vi, summary_vi || '', summary_en || '', content_vi || '', content_en || '', image_url || '', author || 'Ban Biên Tập VMTA', finalStatus, isPub, meta_title_vi || title_vi, meta_title_en || title_en || title_vi, meta_description_vi || summary_vi || '', meta_description_en || summary_en || '', meta_keywords_vi || '', meta_keywords_en || ''
+        `INSERT INTO Post (slug, slug_vi, slug_en, category, title_vi, title_en, summary_vi, summary_en, content_vi, content_en, image_url, author, status, is_published, published_at, meta_title_vi, meta_title_en, meta_description_vi, meta_description_en, meta_keywords_vi, meta_keywords_en)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        finalSlugVi, finalSlugVi, finalSlugEn, category || 'Sự kiện VMTA', title_vi, title_en || title_vi, summary_vi || '', summary_en || '', content_vi || '', content_en || '', image_url || '', author || 'Ban Biên Tập VMTA', finalStatus, isPub, finalPubAt, meta_title_vi || title_vi, meta_title_en || title_en || title_vi, meta_description_vi || summary_vi || '', meta_description_en || summary_en || '', meta_keywords_vi || '', meta_keywords_en || ''
       );
     }
 

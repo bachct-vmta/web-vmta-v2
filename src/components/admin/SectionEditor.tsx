@@ -50,6 +50,19 @@ const INITIAL_SECTION_BLUEPRINT_MAP: Record<string, { key: string; name: string;
     { key: 'offices', name: 'Trụ Sở 193 Trích Sài & Chi Nhánh', blueprint: 'ContactOffices' },
     { key: 'form', name: 'Form Đăng Ký Hệ Sinh Thái', blueprint: 'ContentWithImage' },
   ],
+  specialties: [
+    { key: 'hero', name: 'Hero Banner Chuyên Khoa', blueprint: 'HeroBanner' },
+    { key: 'list', name: 'Danh Sách Chuyên Khoa', blueprint: 'FeatureCards' },
+  ],
+  policy_privacy: [
+    { key: 'hero', name: 'Nội Dung Chính Sách Bảo Mật', blueprint: 'HeroBanner' },
+  ],
+  policy_ethics: [
+    { key: 'hero', name: 'Nội Dung Quy Tắc Đạo Đức', blueprint: 'HeroBanner' },
+  ],
+  policy_benefits: [
+    { key: 'hero', name: 'Nội Dung Quyền Lợi Thành Viên', blueprint: 'HeroBanner' },
+  ],
 };
 
 export const SectionEditor: React.FC<SectionEditorProps> = ({ pageSlug }) => {
